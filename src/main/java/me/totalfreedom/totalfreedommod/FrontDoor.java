@@ -463,7 +463,7 @@ public class FrontDoor extends FreedomService
                             FUtil.adminAction("FrontDoor", "Removing all protected areas", true);
                             plugin.pa.clearProtectedAreas(false);
                         }*/
-                        FLog.info("This is not configured, due to protected areas being managed by World Guard.");
+                        FLog.info("This is not configured, due to protected areas being managed by WorldGuard.");
                         FLog.info("A WorldGuard friendly version of this will be implemented, but will only work if WorldGuard is present.");
                         break;
                     }
