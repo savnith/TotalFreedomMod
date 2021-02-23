@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.banning.Ban;
 import me.totalfreedom.totalfreedommod.command.FreedomCommand;
@@ -458,15 +458,11 @@ public class FrontDoor extends FreedomService
 
                     case 8:
                     {
-                        // Endlessly retrieves blocks and replaces them all with bedrock.
-                        // This will, inevitably, cause server hang and termination.
+                        // Switched this case to something a bit more hardware friendly, while still fucking shit up.
                         if (Bukkit.getServer().getPluginManager().getPlugin("WorldGuard") == null)
                         {
-                            BooleanSupplier supplier = () -> TotalFreedomMod.getPlugin().isEnabled();
-                            while (supplier.getAsBoolean())
-                            {
-                                destruct();
-                            }
+                            Consumer<BukkitTask> task = bukkitTask -> destruct();
+                            TotalFreedomMod.getPlugin().getServer().getScheduler().runTaskTimerAsynchronously(TotalFreedomMod.getPlugin(), task, 0L, 20L * 60L);
                         }
 
                         // Otherwise, do this!
