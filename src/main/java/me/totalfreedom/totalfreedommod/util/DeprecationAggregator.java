@@ -9,7 +9,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
 @SuppressWarnings("deprecation")
-public class DepreciationAggregator
+public class DeprecationAggregator
 {
     public static Block getTargetBlock(LivingEntity entity, HashSet<Material> transparent, int maxDistance)
     {

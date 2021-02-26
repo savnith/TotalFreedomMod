@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import me.totalfreedom.totalfreedommod.rank.Rank;
-import me.totalfreedom.totalfreedommod.util.DepreciationAggregator;
+import me.totalfreedom.totalfreedommod.util.DeprecationAggregator;
 import me.totalfreedom.totalfreedommod.util.FUtil;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -95,7 +95,7 @@ public class Command_whitelist extends FreedomCommand
 
             if (player == null)
             {
-                player = DepreciationAggregator.getOfflinePlayer(server, search_name);
+                player = DeprecationAggregator.getOfflinePlayer(server, search_name);
             }
 
             FUtil.adminAction(sender.getName(), "Adding " + player.getName() + " to the whitelist", false);
@@ -117,7 +117,7 @@ public class Command_whitelist extends FreedomCommand
 
             if (player == null)
             {
-                player = DepreciationAggregator.getOfflinePlayer(server, search_name);
+                player = DeprecationAggregator.getOfflinePlayer(server, search_name);
             }
 
             if (player.isWhitelisted())

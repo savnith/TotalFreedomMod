@@ -24,14 +24,8 @@ public class Ban
     private String username = null;
     private UUID uuid = null;
     private String by = null;
-
-
     private Date at = null;
-
-
     private String reason = null; // Unformatted, &[0-9,a-f] instead of ChatColor
-
-
     private long expiryUnix = -1;
 
     public Ban()
