@@ -97,7 +97,7 @@ public class Module_list extends HTTPDModule
             responseObject.put("master_builders", masterbuilders);
             responseObject.put("operators", operators);
             responseObject.put("imposters", imposters);
-            responseObject.put("online", server.getOnlinePlayers().size());
+            responseObject.put("online", server.getOnlinePlayers().size() - AdminList.vanished.size());
             responseObject.put("max", server.getMaxPlayers());
 
             final NanoHTTPD.Response response = new NanoHTTPD.Response(NanoHTTPD.Response.Status.OK, NanoHTTPD.MIME_JSON, responseObject.toString());
