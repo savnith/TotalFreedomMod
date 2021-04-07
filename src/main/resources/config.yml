@@ -436,6 +436,38 @@ blocked_commands:
   - 's:b:/viaversion:_'
   - 's:b:/spark:_'
 
+# Commands that can't be used when a player is muted
+mute_commands:
+  - say
+  - me
+  - msg
+  - tell
+  - reply
+  - mail
+
+# Commands that can't be used in the /wildcard command
+wildcard_commands:
+  - wildcard
+  - gtfo
+  - doom
+  - slconfig
+  - smite
+
+# Words that regular players can't use in their tags
+forbidden_words:
+  - admin
+  - owner
+  - moderator
+  - developer
+  - console
+  - dev
+  - staff
+  - mod
+  - sra
+  - tca
+  - sta
+  - sa
+
 # Automatically wipe dropped objects
 auto_wipe: true
 

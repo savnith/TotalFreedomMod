@@ -129,7 +129,6 @@ public class TotalFreedomMod extends JavaPlugin
     public Sitter st;
     public VanishHandler vh;
     public Pterodactyl ptero;
-    //public HubWorldRestrictions hwr;
     //
     // Bridges
     public BukkitTelnetBridge btb;

@@ -20,7 +20,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class Muter extends FreedomService
 {
 
-    public static final List<String> MUTE_COMMANDS = Arrays.asList(StringUtils.split("say,me,msg,tell,reply,mail", ","));
     public final List<String> MUTED_PLAYERS = new ArrayList<>();
 
     @Override
@@ -88,7 +87,7 @@ public class Muter extends FreedomService
             cmdName = command.getName().toLowerCase();
         }
 
-        if (MUTE_COMMANDS.contains(cmdName))
+        if (ConfigEntry.MUTE_COMMANDS.getStringList().contains(cmdName))
         {
             player.sendMessage(ChatColor.RED + "That command is blocked while you are muted.");
             event.setCancelled(true);
