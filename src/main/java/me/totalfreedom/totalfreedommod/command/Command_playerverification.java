@@ -126,7 +126,7 @@ public class Command_playerverification extends FreedomCommand
 
                     if (generated)
                     {
-                        msg("Your backup codes have been sent to your discord account. They can be re-generated at anytime.", ChatColor.GREEN);
+                        msg("Your backup codes have been sent to your Discord account. They can be re-generated at anytime.", ChatColor.GREEN);
                     }
                     else
                     {

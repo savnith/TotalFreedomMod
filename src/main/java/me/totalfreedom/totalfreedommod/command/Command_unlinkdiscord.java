@@ -31,7 +31,7 @@ public class Command_unlinkdiscord extends FreedomCommand
             }
 
             playerData.setDiscordID(null);
-            msg("Unlinked " + args[0] + "'s discord account.", ChatColor.GREEN);
+            msg("Unlinked " + args[0] + "'s Discord account.", ChatColor.GREEN);
             return true;
         }
 

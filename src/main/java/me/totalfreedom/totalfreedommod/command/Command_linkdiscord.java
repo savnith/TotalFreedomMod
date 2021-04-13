@@ -32,7 +32,7 @@ public class Command_linkdiscord extends FreedomCommand
             }
 
             playerData.setDiscordID(args[1]);
-            msg("Linked " + args[0] + "'s discord account.", ChatColor.GREEN);
+            msg("Linked " + args[0] + "'s Discord account.", ChatColor.GREEN);
             return true;
         }
 

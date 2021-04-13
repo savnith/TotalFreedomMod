@@ -32,7 +32,7 @@ public class Command_panel extends FreedomCommand
 
         if (playerData.getDiscordID() == null)
         {
-            msg("You must have a linked discord account.", ChatColor.RED);
+            msg("You must have a linked Discord account.", ChatColor.RED);
             return true;
         }
 
@@ -69,7 +69,7 @@ public class Command_panel extends FreedomCommand
             plugin.al.updateTables();
 
             plugin.dc.sendPteroInfo(playerData, username, password);
-            msg("Successfully created your Pterodactyl account. Check your DMs from " + plugin.dc.formatBotTag() + " on discord to get your credentials.", ChatColor.GREEN);
+            msg("Successfully created your Pterodactyl account. Check your DMs from " + plugin.dc.formatBotTag() + " on Discord to get your credentials.", ChatColor.GREEN);
             return true;
         }
         else if (args[0].equalsIgnoreCase("delete"))

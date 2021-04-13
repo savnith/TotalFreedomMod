@@ -203,7 +203,7 @@ public class Discord extends FreedomService
         }
         catch (LoginException e)
         {
-            FLog.warning("An invalid token for the discord verification bot, the bot will not enable.");
+            FLog.warning("An invalid token for the Discord verification bot, the bot will not enable.");
         }
         catch (IllegalArgumentException e)
         {
@@ -211,7 +211,7 @@ public class Discord extends FreedomService
         }
         catch (NoClassDefFoundError e)
         {
-            FLog.warning("The JDA plugin is not installed, therefore the discord bot cannot start.");
+            FLog.warning("The JDA plugin is not installed, therefore the Discord bot cannot start.");
             FLog.warning("To resolve this error, please download the latest JDA from: https://github.com/TFPatches/Minecraft-JDA/releases");
         }
 
@@ -314,7 +314,7 @@ public class Discord extends FreedomService
     public File generateBackupCodesFile(String name, List<String> codes)
     {
         StringBuilder text = new StringBuilder();
-        text.append("Below are your backup codes for use on TotalFreedom in the event you lose access to your discord account.\n")
+        text.append("Below are your backup codes for use on TotalFreedom in the event you lose access to your Discord account.\n")
                 .append("Simply pick a code, and run /verify <code> on the server. Each code is one use, so be sure to cross it off once you use it.\n")
                 .append("To generate new codes, simply run /generatebackupcodes\n\n");
 

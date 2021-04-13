@@ -135,7 +135,7 @@ public class ChatManager extends FreedomService
         // Set format
         event.setFormat(format);
 
-        // Send to discord
+        // Send to Discord
         if (!ConfigEntry.ADMIN_ONLY_MODE.getBoolean() && !Bukkit.hasWhitelist() && !plugin.pl.getPlayer(player).isMuted() && !plugin.tfg.inGuildChat(player))
         {
             plugin.dc.messageChatChannel(player.getName() + " \u00BB " + ChatColor.stripColor(message));

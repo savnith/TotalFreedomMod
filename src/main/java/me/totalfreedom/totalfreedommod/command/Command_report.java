@@ -55,7 +55,7 @@ public class Command_report extends FreedomCommand
         }
 
         msg(ChatColor.GREEN + "Thank you, your report has been successfully logged."
-                + (logged ? ChatColor.RED + "\nNote: This report has been logged to a discord channel, as with any report system, spamming reports can lead to you getting banned." : ""));
+                + (logged ? ChatColor.RED + "\nNote: This report has been logged to a Discord channel, as with any report system, spamming reports can lead to you getting banned." : ""));
 
         return true;
     }
