@@ -217,12 +217,9 @@ public class EventBlocker extends FreedomService
     @EventHandler
     public void onEntitySpawn(EntitySpawnEvent event)
     {
-        if (!ConfigEntry.ALLOW_GRAVITY.getBoolean())
+        if (!ConfigEntry.ALLOW_GRAVITY.getBoolean() && event.getEntity() instanceof FallingBlock)
         {
-            if (event.getEntity() instanceof FallingBlock)
-            {
-                event.setCancelled(true);
-            }
+            event.setCancelled(true);
         }
     }
 
