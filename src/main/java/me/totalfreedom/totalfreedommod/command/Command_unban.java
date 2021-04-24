@@ -53,11 +53,6 @@ public class Command_unban extends FreedomCommand
                 {
                     plugin.bm.removeBan(ban);
                 }
-                ban = plugin.bm.getByIp(FUtil.getFuzzyIp(ip));
-                if (ban != null)
-                {
-                    plugin.bm.removeBan(ban);
-                }
             }
             return true;
         }
