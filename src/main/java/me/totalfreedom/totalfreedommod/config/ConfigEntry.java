@@ -34,6 +34,7 @@ public enum ConfigEntry
     ALLOW_RESPAWN_ANCHORS(Boolean.class, "allow.respawnanchors"),
     AUTO_TP(Boolean.class, "allow.auto_tp"),
     AUTO_CLEAR(Boolean.class, "allow.auto_clear"),
+    ALLOW_GRAVITY(Boolean.class, "allow.gravity"),
     //
     BLOCKED_CHATCODES(String.class, "blocked_chatcodes"),
     //
@@ -165,7 +166,8 @@ public enum ConfigEntry
     MASTER_BUILDER_INFO(List.class, "masterbuilderinfo"),
     AUTO_ENTITY_WIPE(Boolean.class, "auto_wipe"),
     TOGGLE_CHAT(Boolean.class, "toggle_chat"),
-    DEVELOPER_MODE(Boolean.class, "developer_mode");
+    DEVELOPER_MODE(Boolean.class, "developer_mode"),
+    ANTISPAM_MINUTES(Integer.class, "antispam_minutes");
     //
     private final Class<?> type;
     private final String configName;
