@@ -1,5 +1,7 @@
 package me.totalfreedom.totalfreedommod.command;
 
+import me.totalfreedom.totalfreedommod.punishments.Punishment;
+import me.totalfreedom.totalfreedommod.punishments.PunishmentType;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -72,6 +74,8 @@ public class Command_warn extends FreedomCommand
                 warnReason;
         plugin.al.messageAllAdmins(adminNotice);
         plugin.pl.getPlayer(player).incrementWarnings();
+
+        plugin.pul.logPunishment(new Punishment(player.getName(), getData(player).getIps().get(0), sender.getName(), PunishmentType.WARN, warnReason));
         return true;
     }
 }
