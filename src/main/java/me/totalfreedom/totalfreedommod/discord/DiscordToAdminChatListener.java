@@ -25,11 +25,6 @@ public class DiscordToAdminChatListener extends ListenerAdapter
 
     DiscordToMinecraftListener dtml = new DiscordToMinecraftListener();
 
-    public static net.md_5.bungee.api.ChatColor getColor(Displayable display)
-    {
-        return display.getColor();
-    }
-
     public void onMessageReceived(MessageReceivedEvent event)
     {
         String chat_channel_id = ConfigEntry.DISCORD_ADMINCHAT_CHANNEL_ID.getString();
@@ -65,7 +60,7 @@ public class DiscordToAdminChatListener extends ListenerAdapter
                 if (!Strings.isNullOrEmpty(format))
                 {
                     Displayable display = getDisplay(member);
-                    net.md_5.bungee.api.ChatColor color = getColor(display);
+                    net.md_5.bungee.api.ChatColor color = display.getColor();
                     String m = format.replace("%name%", member.getEffectiveName())
                             .replace("%rank%", display.getAbbr())
                             .replace("%rankcolor%", color.toString())
