@@ -69,7 +69,7 @@ public class CommandLoader extends FreedomService
             {
                 add(commandClass.newInstance());
             }
-            catch (InstantiationException | IllegalAccessException | ExceptionInInitializerError ex)
+            catch (Error | Exception ex)
             {
                 FLog.warning("Failed to register command: /" + commandClass.getSimpleName().replace("Command_", ""));
             }

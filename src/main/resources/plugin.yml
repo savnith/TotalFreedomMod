@@ -8,7 +8,6 @@ softdepend:
   - CoreProtect
   - LibsDisguises
   - WorldEdit
-  - WorldGuard
   - WorldGuardExtraFlags
   - TFGuilds
   - JDA

@@ -359,7 +359,15 @@ public class TotalFreedomMod extends JavaPlugin
             ldb = new LibsDisguisesBridge();
             tfg = new TFGuildsBridge();
             web = new WorldEditBridge();
-            wgb = new WorldGuardBridge();
+
+            try
+            {
+                wgb = new WorldGuardBridge();
+            }
+            catch (NoClassDefFoundError ignored)
+            {
+                FLog.warning("WorldGuard was not found. While this will not affect base functionality of the TotalFreedomMod, some worlds will not be protected!");
+            }
         }
 
         private void initFun()

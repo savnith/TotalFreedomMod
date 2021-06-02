@@ -1,18 +1,10 @@
 package me.totalfreedom.totalfreedommod.world;
 
-import com.sk89q.worldguard.protection.flags.Flag;
-import com.sk89q.worldguard.protection.flags.Flags;
-import com.sk89q.worldguard.protection.flags.StateFlag;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import me.totalfreedom.totalfreedommod.FreedomService;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -31,14 +23,6 @@ public class WorldRestrictions extends FreedomService
 
     private final List<String> BLOCKED_ESSENTIALS_COMMANDS = Arrays.asList(
             "bigtree", "ebigtree", "largetree", "elargetree");
-
-    private final Map<Flag<?>, Object> flags = new HashMap<Flag<?>, Object>()
-    {{
-        put(Flags.PLACE_VEHICLE, StateFlag.State.DENY);
-        put(Flags.DESTROY_VEHICLE, StateFlag.State.DENY);
-        put(Flags.ENTITY_ITEM_FRAME_DESTROY, StateFlag.State.DENY);
-        put(Flags.ENTITY_PAINTING_DESTROY, StateFlag.State.DENY);
-    }};
 
     @Override
     public void onStart()
@@ -112,7 +96,7 @@ public class WorldRestrictions extends FreedomService
     {
         if (event.getDamager() instanceof Player)
         {
-            Player player = (Player)event.getDamager();
+            Player player = (Player) event.getDamager();
 
             if (doRestrict(player))
             {
@@ -154,21 +138,5 @@ public class WorldRestrictions extends FreedomService
                 event.setCancelled(true);
             }
         }
-    }
-
-    public void protectWorld(World world)
-    {
-        if (!plugin.wgb.isEnabled())
-        {
-            return;
-        }
-
-        RegionManager regionManager = plugin.wgb.getRegionManager(world);
-
-        GlobalProtectedRegion region = new GlobalProtectedRegion("__global__");
-
-        region.setFlags(flags);
-
-        regionManager.addRegion(region);
     }
 }
