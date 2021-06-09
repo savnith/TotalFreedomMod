@@ -107,7 +107,7 @@
 
         <repository>
             <id>rayzr-repo</id>
-            <url>https://cdn.rawgit.com/Rayzr522/maven-repo/master/</url>
+            <url>https://rayzr.dev/repo/</url>
         </repository>
 
         <repository>

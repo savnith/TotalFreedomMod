@@ -41,6 +41,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.internal.utils.concurrent.CountingThreadFactory;
+import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
@@ -49,6 +50,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
@@ -393,9 +395,27 @@ public class Discord extends FreedomService
         }
     }
 
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerChat(AsyncPlayerChatEvent event)
+    {
+        String message = event.getMessage();
+        Player player = event.getPlayer();
+
+        // Send to Discord
+        if (!ConfigEntry.ADMIN_ONLY_MODE.getBoolean() && !server.hasWhitelist() && !event.isCancelled())
+        {
+            plugin.dc.messageChatChannel(player.getName() + " \u00BB " + ChatColor.stripColor(message));
+        }
+    }
+
     public void messageChatChannel(String message)
     {
         String chat_channel_id = ConfigEntry.DISCORD_CHAT_CHANNEL_ID.getString();
+        if (bot == null || bot.getTextChannelById(chat_channel_id) == null)
+        {
+            return;
+        }
+
         if (message.contains("@everyone") || message.contains("@here"))
         {
             message = StringUtils.remove(message, "@");
@@ -430,6 +450,11 @@ public class Discord extends FreedomService
     public void messageAdminChatChannel(String message)
     {
         String chat_channel_id = ConfigEntry.DISCORD_ADMINCHAT_CHANNEL_ID.getString();
+        if (bot == null || bot.getTextChannelById(chat_channel_id) == null)
+        {
+            return;
+        }
+
         if (message.contains("@everyone") || message.contains("@here"))
         {
             message = StringUtils.remove(message, "@");

@@ -68,7 +68,7 @@ public class AutoEject extends FreedomService
 
                 FUtil.bcastMsg(ChatColor.RED + player.getName() + " has been banned for 5 minutes.");
 
-                plugin.bm.addBan(Ban.forPlayer(player, Bukkit.getConsoleSender(), expires, kickMessage));
+                plugin.bm.addBan(Ban.forPlayer(player, server.getConsoleSender(), expires, kickMessage));
                 player.kickPlayer(kickMessage);
 
                 break;
@@ -81,13 +81,13 @@ public class AutoEject extends FreedomService
 
                 FUtil.bcastMsg(ChatColor.RED + player.getName() + " has been banned for 10 minutes.");
 
-                plugin.bm.addBan(Ban.forPlayer(player, Bukkit.getConsoleSender(), expires, kickMessage));
+                plugin.bm.addBan(Ban.forPlayer(player, server.getConsoleSender(), expires, kickMessage));
                 player.kickPlayer(kickMessage);
                 break;
             }
             case STRIKE_THREE:
             {
-                plugin.bm.addBan(Ban.forPlayerFuzzy(player, Bukkit.getConsoleSender(), null, kickMessage));
+                plugin.bm.addBan(Ban.forPlayerFuzzy(player, server.getConsoleSender(), null, kickMessage));
 
                 FUtil.bcastMsg(ChatColor.RED + player.getName() + " has been banned.");
 

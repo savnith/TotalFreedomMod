@@ -18,7 +18,7 @@ import org.bukkit.plugin.PluginManager;
 public class Command_plugincontrol extends FreedomCommand
 {
 
-    private final List<String> UNTOUCHABLE_PLUGINS = Arrays.asList(plugin.getName());
+    private final List<String> UNTOUCHABLE_PLUGINS = Collections.singletonList(plugin.getName());
 
     @Override
     public boolean run(CommandSender sender, Player playerSender, Command cmd, String commandLabel, String[] args, boolean senderIsConsole)

@@ -25,9 +25,9 @@ public class Announcer extends FreedomService
         prefix = FUtil.colorize(ConfigEntry.ANNOUNCER_PREFIX.getString());
 
         announcements.clear();
-        for (Object announcement : ConfigEntry.ANNOUNCER_ANNOUNCEMENTS.getList())
+        for (String announcement : ConfigEntry.ANNOUNCER_ANNOUNCEMENTS.getStringList())
         {
-            announcements.add(FUtil.colorize((String)announcement));
+            announcements.add(FUtil.colorize((announcement)));
         }
 
         if (!enabled)

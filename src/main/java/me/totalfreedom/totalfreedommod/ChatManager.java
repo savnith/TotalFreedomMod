@@ -10,7 +10,6 @@ import me.totalfreedom.totalfreedommod.util.FLog;
 import me.totalfreedom.totalfreedommod.util.FSync;
 import me.totalfreedom.totalfreedommod.util.FUtil;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.command.CommandSender;
@@ -134,12 +133,6 @@ public class ChatManager extends FreedomService
 
         // Set format
         event.setFormat(format);
-
-        // Send to discord
-        if (!ConfigEntry.ADMIN_ONLY_MODE.getBoolean() && !server.hasWhitelist() && !event.isCancelled())
-        {
-            plugin.dc.messageChatChannel(player.getName() + " \u00BB " + ChatColor.stripColor(message));
-        }
     }
 
     public ChatColor getColor(Displayable display)
@@ -157,7 +150,11 @@ public class ChatManager extends FreedomService
     {
         Displayable display = plugin.rm.getDisplay(sender);
         FLog.info("[ADMIN] " + sender.getName() + " " + display.getTag() + ": " + message, true);
-        plugin.dc.messageAdminChatChannel(sender.getName() + " \u00BB " + message);
+
+        if (plugin.dc.enabled)
+        {
+            plugin.dc.messageAdminChatChannel(sender.getName() + " \u00BB " + message);
+        }
 
         server.getOnlinePlayers().stream().filter(player -> plugin.al.isAdmin(player)).forEach(player ->
         {

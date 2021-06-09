@@ -59,7 +59,7 @@ public class GameRuleHandler extends FreedomService
     @SuppressWarnings("deprecation")
     public void commitGameRules()
     {
-        List<World> worlds = Bukkit.getWorlds();
+        List<World> worlds = server.getWorlds();
         for (Map.Entry<GameRule, Boolean> gameRuleEntry : rules.entrySet())
         {
             String gameRuleName = gameRuleEntry.getKey().getGameRuleName();

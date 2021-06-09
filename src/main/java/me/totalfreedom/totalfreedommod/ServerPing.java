@@ -42,13 +42,13 @@ public class ServerPing extends FreedomService
             return;
         }
 
-        if (Bukkit.hasWhitelist())
+        if (server.hasWhitelist())
         {
             event.setMotd(FUtil.colorize(ConfigEntry.SERVER_WHITELIST_MOTD.getString()));
             return;
         }
 
-        if (Bukkit.getOnlinePlayers().size() >= Bukkit.getMaxPlayers())
+        if (server.getOnlinePlayers().size() >= server.getMaxPlayers())
         {
             event.setMotd(FUtil.colorize(ConfigEntry.SERVER_FULL_MOTD.getString()));
             return;

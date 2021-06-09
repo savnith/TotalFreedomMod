@@ -22,7 +22,7 @@ public class Command_purgeall extends FreedomCommand
         FUtil.adminAction(sender.getName(), "Purging all player data", true);
 
         // Purge entities
-        for (World world : Bukkit.getWorlds())
+        for (World world : server.getWorlds())
         {
             for (Entity entity : world.getEntities())
             {
