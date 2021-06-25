@@ -43,7 +43,6 @@ public class Command_playerverification extends FreedomCommand
                     msg("Cleared all IP's except your current IP \"" + FUtil.getIp(playerSender) + "\"");
                     msg("Cleared " + cleared + " IP's.");
                     plugin.pl.save(target);
-                    plugin.pl.syncIps(target);
                     return true;
                 }
                 else if (args[0].equalsIgnoreCase("clearip"))

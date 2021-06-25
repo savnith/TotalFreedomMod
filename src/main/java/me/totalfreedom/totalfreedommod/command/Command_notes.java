@@ -39,7 +39,8 @@ public class Command_notes extends FreedomCommand
                 return true;
             }
 
-            playerData = plugin.pl.getData(entry.getName());
+            // TODO: why are we querying it twice? that's dumb
+            playerData = plugin.pl.getData(entry.getUuid());
         }
         else
         {

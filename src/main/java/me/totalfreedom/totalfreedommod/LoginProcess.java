@@ -58,7 +58,7 @@ public class LoginProcess extends FreedomService
     public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event)
     {
         final String ip = event.getAddress().getHostAddress().trim();
-        final boolean isAdmin = plugin.al.getEntryByIp(ip) != null;
+        final boolean isAdmin = plugin.al.getEntryByName(event.getName()) != null;
 
         // Check if the player is already online
         for (Player onlinePlayer : server.getOnlinePlayers())
@@ -119,7 +119,7 @@ public class LoginProcess extends FreedomService
         }
 
         // Validation below this point
-        if (plugin.al.getEntryByIp(ip) != null) // Check if player is admin
+        if (plugin.al.getEntryByPlayer(player) != null) // Check if player is admin
         {
             // Force-allow log in
             event.allow();

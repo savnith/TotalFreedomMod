@@ -45,7 +45,7 @@ public class Command_mbconfig extends FreedomCommand
                     return true;
                 }
 
-                PlayerData data = plugin.pl.getData(sender.getName());
+                PlayerData data = plugin.pl.getData(playerSender);
                 if (!data.isMasterBuilder())
                 {
                     msg("You are not a master builder!", ChatColor.RED);
@@ -74,7 +74,7 @@ public class Command_mbconfig extends FreedomCommand
                     return true;
                 }
 
-                PlayerData data = plugin.pl.getData(sender.getName());
+                PlayerData data = plugin.pl.getData(playerSender);
                 final String targetIp = FUtil.getIp(playerSender);
 
                 if (!data.isMasterBuilder())

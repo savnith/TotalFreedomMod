@@ -4,11 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import me.totalfreedom.totalfreedommod.FreedomService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
@@ -27,7 +23,7 @@ public class AdminList extends FreedomService
     // Only active admins below
     private final Set<Admin> activeAdmins = Sets.newHashSet();
     private final Map<String, Admin> nameTable = Maps.newHashMap();
-    private final Map<String, Admin> ipTable = Maps.newHashMap();
+    private final Map<UUID, Admin> uuidTable = Maps.newHashMap();
 
     public static List<String> getVanished()
     {
@@ -66,7 +62,7 @@ public class AdminList extends FreedomService
         }
 
         updateTables();
-        FLog.info("Loaded " + allAdmins.size() + " admins (" + nameTable.size() + " active,  " + ipTable.size() + " IPs)");
+        FLog.info("Loaded " + allAdmins.size() + " admins");
     }
 
     public void messageAllAdmins(String message)
@@ -155,68 +151,22 @@ public class AdminList extends FreedomService
     public Admin getAdmin(Player player)
     {
         // Find admin
-        String ip = FUtil.getIp(player);
-        Admin admin = getEntryByName(player.getName());
+        return getEntryByUuid(player.getUniqueId());
+    }
 
-        // Admin by name
-        if (admin != null)
-        {
-            // Check if we're in online mode,
-            // Or the players IP is in the admin entry
-            if (Bukkit.getOnlineMode() || admin.getIps().contains(ip))
-            {
-                if (!admin.getIps().contains(ip))
-                {
-                    // Add the new IP if we have to
-                    admin.addIp(ip);
-                    save(admin);
-                    updateTables();
-                }
-                return admin;
-            }
-        }
+    public Admin getEntryByPlayer(Player player)
+    {
+        return getEntryByUuid(player.getUniqueId());
+    }
 
-        // Admin by ip
-        admin = getEntryByIp(ip);
-        if (admin != null)
-        {
-            // Set the new username
-            String oldName = admin.getName();
-            admin.setName(player.getName());
-            plugin.sql.updateAdminName(oldName, admin.getName());
-            updateTables();
-        }
-
-        return null;
+    public Admin getEntryByUuid(UUID uuid)
+    {
+        return uuidTable.get(uuid);
     }
 
     public Admin getEntryByName(String name)
     {
         return nameTable.get(name.toLowerCase());
-    }
-
-    public Admin getEntryByIp(String ip)
-    {
-        return ipTable.get(ip);
-    }
-
-    public Admin getEntryByIpFuzzy(String needleIp)
-    {
-        final Admin directAdmin = getEntryByIp(needleIp);
-        if (directAdmin != null)
-        {
-            return directAdmin;
-        }
-
-        for (String ip : ipTable.keySet())
-        {
-            if (FUtil.fuzzyIpMatch(needleIp, ip, 3))
-            {
-                return ipTable.get(ip);
-            }
-        }
-
-        return null;
     }
 
     public void updateLastLogin(Player player)
@@ -228,7 +178,6 @@ public class AdminList extends FreedomService
         }
 
         admin.setLastLogin(new Date());
-        admin.setName(player.getName());
         save(admin);
     }
 
@@ -239,7 +188,7 @@ public class AdminList extends FreedomService
 
     public boolean isVerifiedAdmin(Player player)
     {
-        return verifiedNoAdmin.containsKey(player.getName()) && verifiedNoAdmin.get(player.getName()).contains(FUtil.getIp(player));
+        return verifiedNoAdmin.containsKey(player.getName());
     }
 
     public boolean isIdentityMatched(Player player)
@@ -298,7 +247,7 @@ public class AdminList extends FreedomService
     {
         activeAdmins.clear();
         nameTable.clear();
-        ipTable.clear();
+        uuidTable.clear();
 
         for (Admin admin : allAdmins)
         {
@@ -309,23 +258,13 @@ public class AdminList extends FreedomService
 
             activeAdmins.add(admin);
             nameTable.put(admin.getName().toLowerCase(), admin);
-
-            for (String ip : admin.getIps())
-            {
-                ipTable.put(ip, admin);
-            }
-
+            uuidTable.put(admin.getUuid(), admin);
         }
     }
 
     public Set<String> getAdminNames()
     {
         return nameTable.keySet();
-    }
-
-    public Set<String> getAdminIps()
-    {
-        return ipTable.keySet();
     }
 
     public void save(Admin admin)
@@ -395,11 +334,6 @@ public class AdminList extends FreedomService
     public Map<String, Admin> getNameTable()
     {
         return nameTable;
-    }
-
-    public Map<String, Admin> getIpTable()
-    {
-        return ipTable;
     }
 
     public Map<String, List<String>> getVerifiedNoAdmin()

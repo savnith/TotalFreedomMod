@@ -1,10 +1,7 @@
 package me.totalfreedom.totalfreedommod.command;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.discord.Discord;
@@ -109,7 +106,7 @@ public class Command_saconfig extends FreedomCommand
 
                 if (plugin.dc.enabled && ConfigEntry.DISCORD_ROLE_SYNC.getBoolean())
                 {
-                    Discord.syncRoles(admin, plugin.pl.getData(admin.getName()).getDiscordID());
+                    Discord.syncRoles(admin, plugin.pl.getData(admin.getUuid()).getDiscordID());
                 }
 
                 plugin.ptero.updateAccountStatus(admin);
@@ -176,11 +173,11 @@ public class Command_saconfig extends FreedomCommand
                 }
 
                 // Find the old admin entry
-                String name = player.getName();
+                UUID uuid = player.getUniqueId();
                 Admin admin = null;
                 for (Admin loopAdmin : plugin.al.getAllAdmins())
                 {
-                    if (loopAdmin.getName().equalsIgnoreCase(name) || loopAdmin.getIps().contains(FUtil.getIp(player)))
+                    if (loopAdmin.getUuid().equals(uuid))
                     {
                         admin = loopAdmin;
                         break;
@@ -205,14 +202,6 @@ public class Command_saconfig extends FreedomCommand
                 else // Existing admin
                 {
                     FUtil.adminAction(sender.getName(), "Re-adding " + player.getName() + " to the admin list", true);
-
-                    String oldName = admin.getName();
-                    if (!oldName.equals(player.getName()))
-                    {
-                        admin.setName(player.getName());
-                        plugin.sql.updateAdminName(oldName, admin.getName());
-                    }
-                    admin.addIp(FUtil.getIp(player));
 
                     admin.setActive(true);
                     admin.setLastLogin(new Date());
@@ -280,7 +269,7 @@ public class Command_saconfig extends FreedomCommand
 
                 if (plugin.dc.enabled && ConfigEntry.DISCORD_ROLE_SYNC.getBoolean())
                 {
-                    Discord.syncRoles(admin, plugin.pl.getData(admin.getName()).getDiscordID());
+                    Discord.syncRoles(admin, plugin.pl.getData(admin.getUuid()).getDiscordID());
                 }
 
                 plugin.ptero.updateAccountStatus(admin);

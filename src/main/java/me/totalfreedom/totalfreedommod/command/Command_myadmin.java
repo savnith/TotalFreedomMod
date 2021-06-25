@@ -17,7 +17,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandPermissions(level = Rank.ADMIN, source = SourceType.ONLY_IN_GAME)
-@CommandParameters(description = "Manage your admin entry.", usage = "/<command> [-o <admin name>] <clearips | clearip <ip> | setscformat <format> | clearscformat> | syncroles>")
+@CommandParameters(description = "Manage your admin entry.", usage = "/<command> [-o <admin name>] <setscformat <format> | clearscformat> | syncroles>")
 public class Command_myadmin extends FreedomCommand
 {
     @Override
@@ -59,85 +59,8 @@ public class Command_myadmin extends FreedomCommand
             }
         }
 
-        final String targetIp = FUtil.getIp(targetPlayer);
-
         switch (args[0])
         {
-            case "clearips":
-            {
-                if (args.length != 1)
-                {
-                    return false; // Double check: the player might mean "clearip"
-                }
-
-                if (init == null)
-                {
-                    FUtil.adminAction(sender.getName(), "Clearing my IPs", true);
-                }
-                else
-                {
-                    FUtil.adminAction(sender.getName(), "Clearing " + target.getName() + "'s IPs", true);
-                }
-
-                int counter = target.getIps().size() - 1;
-                target.clearIPs();
-                target.addIp(targetIp);
-
-                plugin.al.save(target);
-                plugin.al.updateTables();
-                plugin.pl.syncIps(target);
-
-                msg(counter + " IPs removed.");
-                msg(targetPlayer, target.getIps().get(0) + " is now your only IP address");
-                return true;
-            }
-
-            case "clearip":
-            {
-                if (args.length != 2)
-                {
-                    return false; // Double check: the player might mean "clearips"
-                }
-
-                if (!target.getIps().contains(args[1]))
-                {
-                    if (init == null)
-                    {
-                        msg("That IP is not registered to you.");
-                    }
-                    else
-                    {
-                        msg("That IP does not belong to that player.");
-                    }
-                    return true;
-                }
-
-                if (targetIp.equals(args[1]))
-                {
-                    if (init == null)
-                    {
-                        msg("You cannot remove your current IP.");
-                    }
-                    else
-                    {
-                        msg("You cannot remove that admins current IP.");
-                    }
-                    return true;
-                }
-
-                FUtil.adminAction(sender.getName(), "Removing an IP" + (init == null ? "" : " from " + targetPlayer.getName() + "'s IPs"), true);
-
-                target.removeIp(args[1]);
-                plugin.al.save(target);
-                plugin.al.updateTables();
-
-                plugin.pl.syncIps(target);
-
-                msg("Removed IP " + args[1]);
-                msg("Current IPs: " + StringUtils.join(target.getIps(), ", "));
-                return true;
-            }
-
             case "setacformat":
             case "setscformat":
             {
@@ -170,7 +93,7 @@ public class Command_myadmin extends FreedomCommand
                         msg("Role syncing is not enabled.", ChatColor.RED);
                         return true;
                     }
-                    PlayerData playerData = plugin.pl.getData(target.getName());
+                    PlayerData playerData = plugin.pl.getData(target.getUuid());
                     if (playerData.getDiscordID() == null)
                     {
                         msg("Please run /linkdiscord first!", ChatColor.RED);
@@ -221,18 +144,6 @@ public class Command_myadmin extends FreedomCommand
             {
                 return FUtil.getPlayerList();
             }
-            else
-            {
-                if (doubleArguments.contains(args[0]))
-                {
-                    if (args[0].equals("clearip"))
-                    {
-                        List<String> ips = plugin.al.getAdmin(sender).getIps();
-                        ips.remove(FUtil.getIp((Player)sender));
-                        return ips;
-                    }
-                }
-            }
         }
         else if (args.length == 3)
         {
@@ -242,17 +153,6 @@ public class Command_myadmin extends FreedomCommand
                 options.addAll(singleArguments);
                 options.addAll(doubleArguments);
                 return options;
-            }
-        }
-        else if (args.length == 4)
-        {
-            if (args[0].equals("-o") && args[2].equals("clearip"))
-            {
-                Admin admin = plugin.al.getEntryByName(args[1]);
-                if (admin != null)
-                {
-                    return admin.getIps();
-                }
             }
         }
         return FUtil.getPlayerList();

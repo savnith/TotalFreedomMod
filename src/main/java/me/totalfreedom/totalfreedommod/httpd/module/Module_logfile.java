@@ -162,7 +162,7 @@ public class Module_logfile extends HTTPDModule
 
     private boolean isAuthorized(String remoteAddress)
     {
-        Admin entry = plugin.al.getEntryByIp(remoteAddress);
+        Admin entry = plugin.al.getEntryByUuid(plugin.pl.getDataByIp(remoteAddress).getUuid());
         return entry == null || !entry.isActive();
     }
 

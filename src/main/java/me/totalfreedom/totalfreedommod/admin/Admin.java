@@ -2,11 +2,8 @@ package me.totalfreedom.totalfreedommod.admin;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import me.totalfreedom.totalfreedommod.LogViewer.LogsRegistrationMode;
 import me.totalfreedom.totalfreedommod.TotalFreedomMod;
 import me.totalfreedom.totalfreedommod.rank.Rank;
@@ -14,14 +11,14 @@ import me.totalfreedom.totalfreedommod.util.FLog;
 import me.totalfreedom.totalfreedommod.util.FUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 public class Admin
 {
 
-
-    private final List<String> ips = new ArrayList<>();
-    private String name;
+    private UUID uuid;
     private boolean active = true;
     private Rank rank = Rank.ADMIN;
     private Date lastLogin = new Date();
@@ -30,21 +27,31 @@ public class Admin
     private String acFormat = null;
     private String pteroID = null;
 
+    public Admin(LegacyAdmin legacy)
+    {
+        // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        this.uuid = TotalFreedomMod.getPlugin().getServer().getOfflinePlayer(legacy.getName()).getUniqueId();
+        this.active = legacy.isActive();
+        this.rank = legacy.getRank();
+        this.lastLogin = legacy.getLastLogin();
+        this.commandSpy = legacy.getCommandSpy();
+        this.potionSpy = legacy.getPotionSpy();
+        this.acFormat = legacy.getAcFormat();
+        this.pteroID = legacy.getPteroID();
+    }
+
     public Admin(Player player)
     {
-        this.name = player.getName();
-        this.ips.add(FUtil.getIp(player));
+        this.uuid = player.getUniqueId();
     }
 
     public Admin(ResultSet resultSet)
     {
         try
         {
-            this.name = resultSet.getString("username");
+            this.uuid = UUID.fromString(resultSet.getString("uuid"));
             this.active = resultSet.getBoolean("active");
             this.rank = Rank.findRank(resultSet.getString("rank"));
-            this.ips.clear();
-            this.ips.addAll(FUtil.stringToList(resultSet.getString("ips")));
             this.lastLogin = new Date(resultSet.getLong("last_login"));
             this.commandSpy = resultSet.getBoolean("command_spy");
             this.potionSpy = resultSet.getBoolean("potion_spy");
@@ -62,8 +69,7 @@ public class Admin
     {
         final StringBuilder output = new StringBuilder();
 
-        output.append("Admin: ").append(name).append("\n")
-                .append("- IPs: ").append(StringUtils.join(ips, ", ")).append("\n")
+        output.append("Admin: ").append(uuid.toString()).append("\n")
                 .append("- Last Login: ").append(FUtil.dateToString(lastLogin)).append("\n")
                 .append("- Rank: ").append(rank.getName()).append("\n")
                 .append("- Is Active: ").append(active).append("\n")
@@ -78,10 +84,9 @@ public class Admin
     {
         Map<String, Object> map = new HashMap<String, Object>()
         {{
-            put("username", name);
+            put("uuid", uuid.toString());
             put("active", active);
             put("rank", rank.toString());
-            put("ips", FUtil.listToString(ips));
             put("last_login", lastLogin.getTime());
             put("command_spy", commandSpy);
             put("potion_spy", potionSpy);
@@ -91,49 +96,29 @@ public class Admin
         return map;
     }
 
-    // Util IP methods
-    public void addIp(String ip)
-    {
-        if (!ips.contains(ip))
-        {
-            ips.add(ip);
-        }
-    }
-
-    public void addIps(List<String> ips)
-    {
-        for (String ip : ips)
-        {
-            addIp(ip);
-        }
-    }
-
-    public void removeIp(String ip)
-    {
-        ips.remove(ip);
-    }
-
-    public void clearIPs()
-    {
-        ips.clear();
-    }
-
     public boolean isValid()
     {
-        return name != null
+        return uuid != null
                 && rank != null
-                && !ips.isEmpty()
                 && lastLogin != null;
     }
 
     public String getName()
     {
-        return name;
+        OfflinePlayer player = TotalFreedomMod.getPlugin().getServer().getOfflinePlayer(uuid);
+        try
+        {
+            return player.getName();
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
     }
 
-    public void setName(String name)
+    public UUID getUuid()
     {
-        this.name = name;
+        return uuid;
     }
 
     public boolean isActive()
@@ -154,17 +139,19 @@ public class Admin
             return;
         }
 
+        final Server server = plugin.getServer();
+
         if (!active)
         {
             if (getRank().isAtLeast(Rank.ADMIN))
             {
                 if (plugin.btb != null)
                 {
-                    plugin.btb.killTelnetSessions(getName());
+                    plugin.btb.killTelnetSessions(server.getOfflinePlayer(uuid).getName());
                 }
             }
 
-            plugin.lv.updateLogsRegistration(null, getName(), LogsRegistrationMode.DELETE);
+            plugin.lv.updateLogsRegistration(null, server.getOfflinePlayer(uuid).getName(), LogsRegistrationMode.DELETE);
         }
     }
 
@@ -176,11 +163,6 @@ public class Admin
     public void setRank(Rank rank)
     {
         this.rank = rank;
-    }
-
-    public List<String> getIps()
-    {
-        return ips;
     }
 
     public Date getLastLogin()

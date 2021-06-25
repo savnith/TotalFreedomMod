@@ -1,10 +1,6 @@
 package me.totalfreedom.totalfreedommod.player;
 
 import com.google.common.collect.Lists;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
-
 import me.totalfreedom.totalfreedommod.TotalFreedomMod;
 import me.totalfreedom.totalfreedommod.shop.ShopItem;
 import me.totalfreedom.totalfreedommod.util.FLog;
@@ -13,12 +9,19 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class PlayerData
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class LegacyPlayerData
 {
     private final List<String> ips = Lists.newArrayList();
     private final List<String> notes = Lists.newArrayList();
     private final List<String> backupCodes = Lists.newArrayList();
-    private UUID uuid;
+    private String name;
     private String tag = null;
     private String discordID = null;
     private Boolean masterBuilder = false;
@@ -42,29 +45,11 @@ public class PlayerData
 
     private Boolean inspect = false;
 
-    public PlayerData(LegacyPlayerData legacy)
-    {
-        this.uuid = TotalFreedomMod.getPlugin().getServer().getOfflinePlayer(legacy.getName()).getUniqueId();
-        this.ips.addAll(legacy.getIps());
-        this.notes.addAll(legacy.getNotes());
-        this.backupCodes.addAll(legacy.getBackupCodes());
-        this.tag = legacy.getTag();
-        this.discordID = legacy.getDiscordID();
-        this.masterBuilder = legacy.getMasterBuilder();
-        this.verification = legacy.getVerification();
-        this.rideMode = legacy.getRideMode();
-        this.coins = legacy.getCoins();
-        this.items = legacy.getItems();
-        this.totalVotes = legacy.getTotalVotes();
-        this.loginMessage = legacy.getLoginMessage();
-        this.inspect = legacy.getInspect();
-    }
-
-    public PlayerData(ResultSet resultSet)
+    public LegacyPlayerData(ResultSet resultSet)
     {
         try
         {
-            uuid = UUID.fromString(resultSet.getString("uuid"));
+            name = resultSet.getString("username");
             ips.clear();
             ips.addAll(FUtil.stringToList(resultSet.getString("ips")));
             notes.clear();
@@ -93,25 +78,23 @@ public class PlayerData
         if (masterBuilder && !verification)
         {
             verification = true;
-            TotalFreedomMod.getPlugin().pl.save(this);
         }
         else if (!masterBuilder && discordID == null && verification)
         {
             this.verification = false;
-            TotalFreedomMod.getPlugin().pl.save(this);
         }
     }
 
-    public PlayerData(Player player)
+    public LegacyPlayerData(Player player)
     {
-        this.uuid = player.getUniqueId();
+        this.name = player.getName();
     }
 
     @Override
     public String toString()
     {
 
-        return "Player: " + uuid.toString() + "\n" +
+        return "Player: " + name + "\n" +
                 "- IPs: " + StringUtils.join(ips, ", ") + "\n" +
                 "- Discord ID: " + discordID + "\n" +
                 "- Master Builder: " + masterBuilder + "\n" +
@@ -248,7 +231,7 @@ public class PlayerData
     {
         return new HashMap<String, Object>()
         {{
-            put("uuid", uuid.toString());
+            put("username", name);
             put("ips", FUtil.listToString(ips));
             put("notes", FUtil.listToString(notes));
             put("tag", tag);
@@ -271,21 +254,14 @@ public class PlayerData
         return displayDiscord;
     }
 
-    public UUID getUuid()
-    {
-        return uuid;
-    }
-
     public String getName()
     {
-        try
-        {
-            return TotalFreedomMod.getPlugin().getServer().getOfflinePlayer(uuid).getName();
-        }
-        catch (Exception ex)
-        {
-            return null;
-        }
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
     }
 
     public String getTag()
