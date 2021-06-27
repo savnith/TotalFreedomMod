@@ -7,11 +7,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import me.totalfreedom.totalfreedommod.FreedomService;
 import me.totalfreedom.totalfreedommod.admin.Admin;
+import me.totalfreedom.totalfreedommod.admin.LegacyAdmin;
 import me.totalfreedom.totalfreedommod.banning.Ban;
+import me.totalfreedom.totalfreedommod.player.LegacyPlayerData;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
 import me.totalfreedom.totalfreedommod.util.FLog;
 import me.totalfreedom.totalfreedommod.util.FUtil;
@@ -26,6 +30,7 @@ public class SQLite extends FreedomService
     public void onStart()
     {
         connect();
+        convertTables();
         checkTables();
     }
 
@@ -416,5 +421,77 @@ public class SQLite extends FreedomService
     public boolean tableExists(DatabaseMetaData meta, String name) throws SQLException
     {
         return !meta.getTables(null, null, name, null).next();
+    }
+
+    public boolean convertTables()
+    {
+        try
+        {
+            DatabaseMetaData meta = connection.getMetaData();
+
+            // Legacy admin list check
+            ResultSet adminColumns = meta.getColumns(null, null, "admins", "username");
+            if (adminColumns.next())
+            {
+                FLog.info("Converting legacy admin data");
+
+                // The current SQL database contains legacy data. Let's fix that.
+                connection.createStatement().execute("ALTER TABLE `admins` RENAME TO `admins_backup`");
+                connection.createStatement().execute("CREATE TABLE `admins` (`uuid` VARCHAR NOT NULL, `rank` VARCHAR NOT NULL, `active` BOOLEAN NOT NULL, `last_login` LONG NOT NULL, `command_spy` BOOLEAN NOT NULL, `potion_spy` BOOLEAN NOT NULL, `ac_format` VARCHAR, `ptero_id` VARCHAR);");
+
+                ResultSet admins = connection.createStatement().executeQuery("SELECT * FROM `admins_backup`");
+                while (admins.next())
+                {
+                    LegacyAdmin oldData = new LegacyAdmin(admins);
+                    FLog.debug("Converting legacy entry for " + oldData.getName());
+                    addAdmin(new Admin(oldData));
+                }
+
+                FLog.info("Legacy admin data conversion completed");
+                FLog.info("In case something went wrong, you can recover the old data stored in `admins_backup`.");
+            }
+
+            // Legacy player list check
+            ResultSet playerColumns = meta.getColumns(null, null, "players", "username");
+            if (playerColumns.next())
+            {
+                FLog.info("Converting legacy player data");
+
+                connection.createStatement().execute("ALTER TABLE `players` RENAME TO `players_backup`");
+                connection.createStatement().execute("CREATE TABLE `players` (`uuid` VARCHAR NOT NULL, `ips` VARCHAR NOT NULL, `notes` VARCHAR, `tag` VARCHAR, `discord_id` VARCHAR, `backup_codes` VARCHAR, `master_builder` BOOLEAN NOT NULL,`verification` BOOLEAN NOT NULL, `ride_mode` VARCHAR NOT NULL, `coins` INT, `items` VARCHAR, `total_votes` INT NOT NULL, `display_discord` BOOLEAN NOT NULL, `login_message` VARCHAR, `inspect` BOOLEAN NOT NULL);");
+
+                List<LegacyPlayerData> toConvert = new ArrayList<>();
+
+                ResultSet players = connection.createStatement().executeQuery("SELECT * FROM `players_backup`");
+                int so_far = 0;
+                int size = players.getFetchSize();
+                while (players.next())
+                {
+                    LegacyPlayerData oldPlData = new LegacyPlayerData(players);
+                    toConvert.add(oldPlData);
+                    FLog.debug("Adding " + oldPlData.getName() + " to the list of things to be converted (" + so_far + "/" + size + ")");
+                    so_far++;
+                }
+
+                int completed = 0;
+                for (LegacyPlayerData data : toConvert)
+                {
+                    FLog.debug("Converting legacy player entry for " + data.getName() + " (" + completed + "/" + toConvert.size() + ")");
+                    addPlayer(new PlayerData(data));
+                    completed++;
+                }
+
+                FLog.info("Legacy player data conversion completed");
+                FLog.info("In case something went wrong, you can recover the old data stored in `players_backup`.");
+            }
+        }
+        catch (SQLException ex)
+        {
+            FLog.severe("Failed to convert legacy data");
+            FLog.severe(ex);
+            return false;
+        }
+
+        return true;
     }
 }
