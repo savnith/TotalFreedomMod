@@ -92,7 +92,6 @@ public class Command_verify extends FreedomCommand
                 msg("You have been unfrozen.");
             }
             FUtil.bcastMsg(playerSender.getName() + " has verified!", ChatColor.GOLD);
-            playerSender.setOp(true);
             plugin.pl.verify(playerSender, backupCode);
             return true;
         }

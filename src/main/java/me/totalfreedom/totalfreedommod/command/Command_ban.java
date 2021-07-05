@@ -83,9 +83,6 @@ public class Command_ban extends FreedomCommand
             //ips.addAll(entry.getIps());/
             ips.add(FUtil.getIp(player));
 
-            // Deop
-            player.setOp(false);
-
             // Gamemode survival
             player.setGameMode(GameMode.SURVIVAL);
 

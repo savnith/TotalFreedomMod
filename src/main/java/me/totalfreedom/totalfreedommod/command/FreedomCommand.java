@@ -2,13 +2,8 @@ package me.totalfreedom.totalfreedommod.command;
 
 import com.google.common.collect.Lists;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+
 import me.totalfreedom.totalfreedommod.TotalFreedomMod;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
@@ -32,8 +27,6 @@ import org.jetbrains.annotations.NotNull;
 public abstract class FreedomCommand implements CommandExecutor, TabCompleter
 {
     public static final String COMMAND_PREFIX = "Command_";
-    public static final String YOU_ARE_OP = ChatColor.YELLOW + "You are now op!";
-    public static final String YOU_ARE_NOT_OP = ChatColor.YELLOW + "You are no longer op!";
     public static final String PLAYER_NOT_FOUND = ChatColor.GRAY + "Player not found!";
     public static final String ONLY_CONSOLE = ChatColor.RED + "Only console senders may execute this command!";
     public static final String ONLY_IN_GAME = ChatColor.RED + "Only in-game players may execute this command!";
@@ -53,6 +46,7 @@ public abstract class FreedomCommand implements CommandExecutor, TabCompleter
     private final int cooldown;
     private final CommandParameters params;
     private final CommandPermissions perms;
+    private final String node;
     protected CommandSender sender;
 
     FreedomCommand()
@@ -60,6 +54,7 @@ public abstract class FreedomCommand implements CommandExecutor, TabCompleter
         params = getClass().getAnnotation(CommandParameters.class);
         perms = getClass().getAnnotation(CommandPermissions.class);
         this.name = getClass().getSimpleName().replace(COMMAND_PREFIX, "").toLowerCase();
+        this.node = "totalfreedommod.command." + getClass().getSimpleName().replace(COMMAND_PREFIX, "").toLowerCase();
         this.description = params.description();
         this.usage = params.usage();
         this.aliases = params.aliases();
@@ -118,6 +113,10 @@ public abstract class FreedomCommand implements CommandExecutor, TabCompleter
         if (this.usage != null)
         {
             cmd.setUsage(this.usage);
+        }
+        if (this.node != null)
+        {
+            cmd.setPermission(this.node);
         }
         getCommandMap().register("totalfreedommod", cmd);
         cmd.setExecutor(this);
@@ -179,14 +178,6 @@ public abstract class FreedomCommand implements CommandExecutor, TabCompleter
         }
     }
 
-    protected void checkRank(Rank rank)
-    {
-        if (!plugin.rm.getRank(sender).isAtLeast(rank))
-        {
-            noPerms();
-        }
-    }
-
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String commandLabel, @NotNull String[] args)
     {
         try
@@ -208,6 +199,11 @@ public abstract class FreedomCommand implements CommandExecutor, TabCompleter
     @NotNull
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args)
     {
+        if (!sender.hasPermission(node))
+        {
+            return Collections.emptyList();
+        }
+
         List<String> options = getTabCompleteOptions(sender, command, alias, args);
         if (options == null)
         {
@@ -377,7 +373,7 @@ public abstract class FreedomCommand implements CommandExecutor, TabCompleter
 
         public boolean func2()
         {
-            if (!plugin.rm.getRank(sender).isAtLeast(perms.level()))
+            if (!sender.hasPermission(node))
             {
                 msg(NO_PERMISSION);
                 return true;

@@ -28,7 +28,11 @@ public class Command_loginmessage extends FreedomCommand
             return true;
         }
 
-        checkRank(Rank.ADMIN);
+        if (sender.hasPermission("totalfreedommod.command.loginmessage.custom"))
+        {
+            noPerms();
+            return true;
+        }
 
         String message = StringUtils.join(args, " ");
         if (!message.contains("%rank%") && !message.contains("%coloredrank%"))

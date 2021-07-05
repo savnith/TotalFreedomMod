@@ -43,6 +43,11 @@ public class PotionBlocker extends FreedomService
         {
             if (player != null)
             {
+                if (player.hasPermission("totalfreedommod.bypasses.death_potion_blocker"))
+                {
+                    return;
+                }
+
                 player.sendMessage(ChatColor.RED + "You are not allowed to use death potions.");
             }
             event.setCancelled(true);
@@ -64,6 +69,11 @@ public class PotionBlocker extends FreedomService
         {
             if (player != null)
             {
+                if (player.hasPermission("totalfreedommod.bypasses.death_potion_blocker"))
+                {
+                    return;
+                }
+
                 player.sendMessage(ChatColor.RED + "You are not allowed to use death potions.");
             }
             event.setCancelled(true);

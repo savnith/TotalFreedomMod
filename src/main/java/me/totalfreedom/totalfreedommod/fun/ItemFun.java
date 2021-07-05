@@ -78,7 +78,8 @@ public class ItemFun extends FreedomService
 
     public boolean onCooldown(Player player, ShopItem item)
     {
-        if (cooldownTracker.get(player.getName()) == null)
+        if (cooldownTracker.get(player.getName()) == null ||
+                player.hasPermission("totalfreedommod.bypasses.item_cooldown." + item.name().toLowerCase()))
         {
             return false;
         }

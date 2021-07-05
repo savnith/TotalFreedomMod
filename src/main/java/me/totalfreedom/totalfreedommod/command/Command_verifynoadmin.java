@@ -53,8 +53,6 @@ public class Command_verifynoadmin extends FreedomCommand
             }
             plugin.rm.updateDisplay(player);
             FUtil.adminAction(sender.getName(), "Verified " + player.getName() + ", without admin permissions.", true);
-            player.setOp(true);
-            msg(player, YOU_ARE_OP);
             final FPlayer fPlayer = plugin.pl.getPlayer(player);
             if (fPlayer.getFreezeData().isFrozen())
             {

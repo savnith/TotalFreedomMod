@@ -234,7 +234,6 @@ public class RankManager extends FreedomService
             String displayName = Rank.IMPOSTOR.getColor() + player.getName();
             player.setPlayerListName(StringUtils.substring(displayName, 0, 16));
             player.getInventory().clear();
-            player.setOp(false);
             player.setGameMode(GameMode.SURVIVAL);
             plugin.pl.getPlayer(player).getFreezeData().setFrozen(true);
             player.sendMessage(ChatColor.RED + "You are marked as an impostor, please verify yourself!");

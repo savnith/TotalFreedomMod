@@ -63,9 +63,6 @@ public class Command_doom extends FreedomCommand
         // Remove from whitelist
         player.setWhitelisted(false);
 
-        // Deop
-        player.setOp(false);
-
         String reason = null;
 
         if (args.length > 1)

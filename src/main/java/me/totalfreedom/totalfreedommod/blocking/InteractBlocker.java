@@ -57,6 +57,12 @@ public class InteractBlocker extends FreedomService
     public void onBedEnter(PlayerBedEnterEvent event)
     {
         Player player = event.getPlayer();
+
+        if (player.hasPermission("totalfreedommod.bypasses.mcpe_28723"))
+        {
+            return;
+        }
+
         if (Groups.EXPLOSIVE_BED_BIOMES.contains(event.getBed().getBiome()))
         {
             player.sendMessage(ChatColor.RED + "You may not sleep here.");
@@ -70,6 +76,11 @@ public class InteractBlocker extends FreedomService
 
         if (event.getClickedBlock() != null)
         {
+            if (player.hasPermission("totalfreedommod.bypasses.malicious_block_blocker"))
+            {
+                return;
+            }
+
             if (event.getClickedBlock().getType().equals(Material.STRUCTURE_BLOCK) || event.getClickedBlock().getType().equals(Material.JIGSAW) || event.getClickedBlock().getType().equals(Material.RESPAWN_ANCHOR))
             {
                 event.setCancelled(true);
@@ -79,6 +90,11 @@ public class InteractBlocker extends FreedomService
 
         if (Groups.SPAWN_EGGS.contains(event.getMaterial()))
         {
+            if (player.hasPermission("totalfreedommod.bypasses.spawn_egg_blocker"))
+            {
+                return;
+            }
+
             player.getInventory().clear(player.getInventory().getHeldItemSlot());
             player.sendMessage(ChatColor.GRAY + "Spawn eggs are currently disabled.");
             event.setCancelled(true);
@@ -89,7 +105,7 @@ public class InteractBlocker extends FreedomService
         {
             case WATER_BUCKET:
             {
-                if (plugin.al.isAdmin(player) || ConfigEntry.ALLOW_WATER_PLACE.getBoolean())
+                if (player.hasPermission("totalfreedommod.bypasses.water_blocker") || ConfigEntry.ALLOW_WATER_PLACE.getBoolean())
                 {
                     break;
                 }
@@ -102,7 +118,7 @@ public class InteractBlocker extends FreedomService
 
             case LAVA_BUCKET:
             {
-                if (plugin.al.isAdmin(player) || ConfigEntry.ALLOW_LAVA_PLACE.getBoolean())
+                if (player.hasPermission("totalfreedommod.bypasses.lava_blocker") || ConfigEntry.ALLOW_LAVA_PLACE.getBoolean())
                 {
                     break;
                 }
@@ -115,7 +131,7 @@ public class InteractBlocker extends FreedomService
 
             case TNT_MINECART:
             {
-                if (ConfigEntry.ALLOW_TNT_MINECARTS.getBoolean())
+                if (player.hasPermission("totalfreedommod.bypasses.tnt_minecart_blocker")  || ConfigEntry.ALLOW_TNT_MINECARTS.getBoolean())
                 {
                     break;
                 }
@@ -128,7 +144,7 @@ public class InteractBlocker extends FreedomService
 
             case ARMOR_STAND:
             {
-                if (ConfigEntry.ALLOW_ARMOR_STANDS.getBoolean())
+                if (player.hasPermission("totalfreedommod.bypasses.armor_stand_blocker") || ConfigEntry.ALLOW_ARMOR_STANDS.getBoolean())
                 {
                     break;
                 }
@@ -140,7 +156,7 @@ public class InteractBlocker extends FreedomService
             }
             case MINECART:
             {
-                if (ConfigEntry.ALLOW_MINECARTS.getBoolean())
+                if (player.hasPermission("totalfreedommod.bypasses.minecart_blocker")  || ConfigEntry.ALLOW_MINECARTS.getBoolean())
                 {
                     break;
                 }
@@ -152,6 +168,11 @@ public class InteractBlocker extends FreedomService
             }
             case WRITTEN_BOOK:
             {
+                if (player.hasPermission("totalfreedommod.bypasses.book_blocker"))
+                {
+                    break;
+                }
+
                 player.getInventory().clear(player.getInventory().getHeldItemSlot());
                 player.sendMessage(ChatColor.GRAY + "Books are currently disabled.");
                 event.setCancelled(true);

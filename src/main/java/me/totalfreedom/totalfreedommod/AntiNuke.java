@@ -25,12 +25,13 @@ public class AntiNuke extends FreedomService
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event)
     {
-        if (!ConfigEntry.NUKE_MONITOR_ENABLED.getBoolean())
+        final Player player = event.getPlayer();
+
+        if (!ConfigEntry.NUKE_MONITOR_ENABLED.getBoolean() || player.hasPermission("totalfreedommod.bypasses.nonuke"))
         {
             return;
         }
 
-        final Player player = event.getPlayer();
         final FPlayer fPlayer = plugin.pl.getPlayer(player);
 
         if (fPlayer.incrementAndGetBlockDestroyCount() > ConfigEntry.NUKE_MONITOR_COUNT_BREAK.getInteger())
@@ -48,12 +49,12 @@ public class AntiNuke extends FreedomService
     @EventHandler(priority = EventPriority.HIGH)
     public void onBlockPlace(BlockPlaceEvent event)
     {
-        if (!ConfigEntry.NUKE_MONITOR_ENABLED.getBoolean())
+        Player player = event.getPlayer();
+        if (!ConfigEntry.NUKE_MONITOR_ENABLED.getBoolean() || player.hasPermission("totalfreedommod.bypasses.nonuke"))
         {
             return;
         }
 
-        Player player = event.getPlayer();
         FPlayer fPlayer = plugin.pl.getPlayer(player);
 
         if (fPlayer.incrementAndGetBlockPlaceCount() > ConfigEntry.NUKE_MONITOR_COUNT_PLACE.getInteger())

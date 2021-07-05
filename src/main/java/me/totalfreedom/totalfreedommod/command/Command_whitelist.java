@@ -24,144 +24,185 @@ public class Command_whitelist extends FreedomCommand
             return false;
         }
 
-        // list
-        if (args[0].equalsIgnoreCase("list"))
+        switch (args[0].toLowerCase())
         {
-            if (server.getWhitelistedPlayers().isEmpty())
+            case "list":
             {
-                msg("There are no whitelisted players.");
+                if (!sender.hasPermission("totalfreedommod.command.whitelist.list"))
+                {
+                    noPerms();
+                    return true;
+                }
+
+                if (server.getWhitelistedPlayers().isEmpty())
+                {
+                    msg("There are no whitelisted players.");
+                    return true;
+                }
+                msg("Whitelisted players: " + FUtil.playerListToNames(server.getWhitelistedPlayers()));
                 return true;
             }
-            msg("Whitelisted players: " + FUtil.playerListToNames(server.getWhitelistedPlayers()));
-            return true;
-        }
 
-        // count
-        if (args[0].equalsIgnoreCase("count"))
-        {
-            int onlineWPs = 0;
-            int offlineWPs = 0;
-            int totalWPs = 0;
-
-            for (OfflinePlayer player : server.getWhitelistedPlayers())
+            case "count":
             {
-                if (player.isOnline())
+                if (!sender.hasPermission("totalfreedommod.command.whitelist.count"))
                 {
-                    onlineWPs++;
+                    noPerms();
+                    return true;
+                }
+
+                int onlineWPs = 0;
+                int offlineWPs = 0;
+                int totalWPs = 0;
+
+                for (OfflinePlayer player : server.getWhitelistedPlayers())
+                {
+                    if (player.isOnline())
+                    {
+                        onlineWPs++;
+                    }
+                    else
+                    {
+                        offlineWPs++;
+                    }
+                    totalWPs++;
+                }
+
+                msg("Online whitelisted players: " + onlineWPs);
+                msg("Offline whitelisted players: " + offlineWPs);
+                msg("Total whitelisted players: " + totalWPs);
+                return true;
+            }
+
+            case "on":
+            {
+                if (!sender.hasPermission("totalfreedommod.command.whitelist.on"))
+                {
+                    noPerms();
+                    return true;
+                }
+
+                FUtil.adminAction(sender.getName(), "Turning the whitelist on", true);
+                server.setWhitelist(true);
+                return true;
+            }
+
+            case "off":
+            {
+                if (!sender.hasPermission("totalfreedommod.command.whitelist.off"))
+                {
+                    noPerms();
+                    return true;
+                }
+
+                FUtil.adminAction(sender.getName(), "Turning the whitelist off", true);
+                server.setWhitelist(false);
+                return true;
+            }
+
+            case "add":
+            {
+                if (!sender.hasPermission("totalfreedommod.command.whitelist.add"))
+                {
+                    noPerms();
+                    return true;
+                }
+
+                if (args.length < 2)
+                {
+                    return false;
+                }
+
+                String search_name = args[1].trim().toLowerCase();
+
+                OfflinePlayer player = getPlayer(search_name);
+
+                if (player == null)
+                {
+                    player = DepreciationAggregator.getOfflinePlayer(server, search_name);
+                }
+
+                FUtil.adminAction(sender.getName(), "Adding " + player.getName() + " to the whitelist", false);
+                player.setWhitelisted(true);
+                return true;
+            }
+
+            case "remove":
+            {
+                if (!sender.hasPermission("totalfreedommod.command.whitelist.remove"))
+                {
+                    noPerms();
+                    return true;
+                }
+
+                if (args.length < 2)
+                {
+                    return false;
+                }
+
+                String search_name = args[1].trim().toLowerCase();
+
+                OfflinePlayer player = getPlayer(search_name);
+
+                if (player == null)
+                {
+                    player = DepreciationAggregator.getOfflinePlayer(server, search_name);
+                }
+
+                if (player.isWhitelisted())
+                {
+                    FUtil.adminAction(sender.getName(), "Removing " + player.getName() + " from the whitelist", false);
+                    player.setWhitelisted(false);
                 }
                 else
                 {
-                    offlineWPs++;
+                    msg("That player is not whitelisted");
                 }
-                totalWPs++;
+                return true;
             }
 
-            msg("Online whitelisted players: " + onlineWPs);
-            msg("Offline whitelisted players: " + offlineWPs);
-            msg("Total whitelisted players: " + totalWPs);
-            return true;
-        }
-
-        // Commands below are restricted to admins
-        checkRank(Rank.ADMIN);
-
-        // on
-        if (args[0].equalsIgnoreCase("on"))
-        {
-            FUtil.adminAction(sender.getName(), "Turning the whitelist on", true);
-            server.setWhitelist(true);
-            return true;
-        }
-
-        // off
-        if (args[0].equalsIgnoreCase("off"))
-        {
-            FUtil.adminAction(sender.getName(), "Turning the whitelist off", true);
-            server.setWhitelist(false);
-            return true;
-        }
-
-        // add
-        if (args[0].equalsIgnoreCase("add"))
-        {
-            if (args.length < 2)
+            case "addall":
             {
-                return false;
-            }
-
-            String search_name = args[1].trim().toLowerCase();
-
-            OfflinePlayer player = getPlayer(search_name);
-
-            if (player == null)
-            {
-                player = DepreciationAggregator.getOfflinePlayer(server, search_name);
-            }
-
-            FUtil.adminAction(sender.getName(), "Adding " + player.getName() + " to the whitelist", false);
-            player.setWhitelisted(true);
-            return true;
-        }
-
-        // remove
-        if (args[0].equalsIgnoreCase("remove"))
-        {
-            if (args.length < 2)
-            {
-                return false;
-            }
-
-            String search_name = args[1].trim().toLowerCase();
-
-            OfflinePlayer player = getPlayer(search_name);
-
-            if (player == null)
-            {
-                player = DepreciationAggregator.getOfflinePlayer(server, search_name);
-            }
-
-            if (player.isWhitelisted())
-            {
-                FUtil.adminAction(sender.getName(), "Removing " + player.getName() + " from the whitelist", false);
-                player.setWhitelisted(false);
-            }
-            else
-            {
-                msg("That player is not whitelisted");
-            }
-            return true;
-        }
-
-        // addall
-        if (args[0].equalsIgnoreCase("addall"))
-        {
-            FUtil.adminAction(sender.getName(), "Adding all online players to the whitelist", false);
-            int counter = 0;
-            for (Player player : server.getOnlinePlayers())
-            {
-                if (!player.isWhitelisted())
+                if (!sender.hasPermission("totalfreedommod.command.whitelist.addall"))
                 {
-                    player.setWhitelisted(true);
-                    counter++;
+                    noPerms();
+                    return true;
                 }
+
+                FUtil.adminAction(sender.getName(), "Adding all online players to the whitelist", false);
+                int counter = 0;
+                for (Player player : server.getOnlinePlayers())
+                {
+                    if (!player.isWhitelisted())
+                    {
+                        player.setWhitelisted(true);
+                        counter++;
+                    }
+                }
+
+                msg("Whitelisted " + counter + " players.");
+                return true;
             }
 
-            msg("Whitelisted " + counter + " players.");
-            return true;
-        }
+            case "purge":
+            {
+                checkConsole();
+                if (!sender.hasPermission("totalfreedommod.command.whitelist.purge"))
+                {
+                    noPerms();
+                    return true;
+                }
 
-        // Telnet only
-        checkConsole();
-        checkRank(Rank.ADMIN);
+                FUtil.adminAction(sender.getName(), "Removing all players from the whitelist", false);
+                msg("Removed " + plugin.si.purgeWhitelist() + " players from the whitelist.");
+                return true;
+            }
 
-        // purge
-        if (args[0].equalsIgnoreCase("purge"))
-        {
-            FUtil.adminAction(sender.getName(), "Removing all players from the whitelist", false);
-            msg("Removed " + plugin.si.purgeWhitelist() + " players from the whitelist.");
-            return true;
+            default:
+            {
+                return false;
+            }
         }
-        return false;
     }
 
     @Override
@@ -169,24 +210,47 @@ public class Command_whitelist extends FreedomCommand
     {
         if (args.length == 1)
         {
-            List<String> arguments = new ArrayList<>(Arrays.asList("list", "count"));
-            if (plugin.al.isAdmin(sender))
+            List<String> arguments = new ArrayList<>();
+
+            if (sender.hasPermission("totalfreedommod.command.whitelist.list"))
             {
-                arguments.addAll(Arrays.asList("on", "off", "add", "remove", "addall"));
-                if (!(sender instanceof Player))
-                {
-                    arguments.add("purge");
-                }
+                arguments.add("list");
             }
+
+            if (sender.hasPermission("totalfreedommod.command.whitelist.count"))
+            {
+                arguments.add("count");
+            }
+
+            if (sender.hasPermission("totalfreedommod.command.whitelist.add"))
+            {
+                arguments.add("add");
+            }
+
+            if (sender.hasPermission("totalfreedommod.command.whitelist.remove"))
+            {
+                arguments.add("remove");
+            }
+
+            if (sender.hasPermission("totalfreedommod.command.whitelist.addall"))
+            {
+                arguments.add("addall");
+            }
+
+            if (!(sender instanceof Player) && sender.hasPermission("totalfreedommod.command.whitelist.purge"))
+            {
+                arguments.add("purge");
+            }
+
             return arguments;
         }
-        else if (args.length == 2 && plugin.al.isAdmin(sender))
+        else if (args.length == 2)
         {
-            if (args[0].equals("add"))
+            if (args[0].equalsIgnoreCase("add") && sender.hasPermission("totalfreedommod.command.whitelist.add"))
             {
                 return FUtil.getPlayerList();
             }
-            else if (args[0].equals("remove"))
+            else if (args[0].equals("remove") && sender.hasPermission("totalfreedommod.command.whitelist.remove"))
             {
                 return getWhitelistedNames();
             }

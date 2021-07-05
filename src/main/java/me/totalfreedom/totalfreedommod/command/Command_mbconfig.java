@@ -128,8 +128,6 @@ public class Command_mbconfig extends FreedomCommand
                     {
                         plugin.pl.verify(player, null);
                         plugin.rm.updateDisplay(player);
-                        player.setOp(true);
-                        msg(player, YOU_ARE_OP);
                     }
                 }
                 else if (!data.isMasterBuilder())

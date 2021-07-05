@@ -74,21 +74,41 @@ public class PVPBlocker extends FreedomService
         {
             if (player.getGameMode() == GameMode.CREATIVE)
             {
+                if (player.hasPermission("totalfreedommod.bypasses.pvp_blocker.creative"))
+                {
+                    return;
+                }
+
                 player.sendMessage(ChatColor.RED + "Creative PvP is not allowed!");
                 event.setCancelled(true);
             }
             else if (plugin.esb.getEssentialsUser(player.getName()).isGodModeEnabled())
             {
+                if (player.hasPermission("totalfreedommod.bypasses.pvp_blocker.god"))
+                {
+                    return;
+                }
+
                 player.sendMessage(ChatColor.RED + "God mode PvP is not allowed!");
                 event.setCancelled(true);
             }
             else if (plugin.pl.getPlayer(target).isPvpBlocked())
             {
+                if (player.hasPermission("totalfreedommod.bypasses.pvp_blocker.disabled_others"))
+                {
+                    return;
+                }
+
                 player.sendMessage(ChatColor.RED + target.getName() + " has PvP disabled!");
                 event.setCancelled(true);
             }
             else if (plugin.pl.getPlayer(player).isPvpBlocked())
             {
+                if (player.hasPermission("totalfreedommod.bypasses.pvp_blocker.disabled"))
+                {
+                    return;
+                }
+
                 player.sendMessage(ChatColor.RED + "You have PvP disabled!");
                 event.setCancelled(true);
             }

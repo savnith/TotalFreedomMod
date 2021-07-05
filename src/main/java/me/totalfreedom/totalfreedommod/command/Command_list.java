@@ -53,13 +53,23 @@ public class Command_list extends FreedomCommand
                 }
                 case "-v":
                 {
-                    checkRank(Rank.ADMIN);
+                    if (!sender.hasPermission("totalfreedommod.command.list.vanished"))
+                    {
+                        noPerms();
+                        return true;
+                    }
+
                     listFilter = ListFilter.VANISHED_ADMINS;
                     break;
                 }
                 case "-t":
                 {
-                    checkRank(Rank.ADMIN);
+                    if (!sender.hasPermission("totalfreedommod.command.list.telnet"))
+                    {
+                        noPerms();
+                        return true;
+                    }
+
                     listFilter = ListFilter.TELNET_SESSIONS;
                     break;
                 }
@@ -88,7 +98,7 @@ public class Command_list extends FreedomCommand
 
         List<String> n = new ArrayList<>();
 
-        if (listFilter == ListFilter.TELNET_SESSIONS && plugin.al.isAdmin(sender))
+        if (listFilter == ListFilter.TELNET_SESSIONS && sender.hasPermission("totalfreedommod.command.list.telnet"))
         {
             List<Admin> connectedAdmins = plugin.btb.getConnectedAdmins();
             onlineStats.append(ChatColor.BLUE).append("There are ").append(ChatColor.RED).append(connectedAdmins.size())

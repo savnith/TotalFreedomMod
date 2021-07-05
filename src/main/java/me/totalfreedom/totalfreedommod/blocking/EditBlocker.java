@@ -25,7 +25,7 @@ public class EditBlocker extends FreedomService
     public void onBlockPlace(BlockPlaceEvent event)
     {
         FPlayer fPlayer = plugin.pl.getPlayerSync(event.getPlayer());
-        if (!fPlayer.isEditBlocked())
+        if (!fPlayer.isEditBlocked() || event.getPlayer().hasPermission("totalfreedommod.bypasses.block_place_blocker"))
         {
             return;
         }
@@ -44,7 +44,7 @@ public class EditBlocker extends FreedomService
     public void onBlockBreak(BlockBreakEvent event)
     {
         FPlayer fPlayer = plugin.pl.getPlayerSync(event.getPlayer());
-        if (!fPlayer.isEditBlocked())
+        if (!fPlayer.isEditBlocked() || event.getPlayer().hasPermission("totalfreedommod.bypasses.block_break_blocker"))
         {
             return;
         }

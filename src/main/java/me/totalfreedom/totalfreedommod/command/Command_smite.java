@@ -47,9 +47,6 @@ public class Command_smite extends FreedomCommand
             sender.sendMessage("Smitten " + player.getName() + " quietly.");
         }
 
-        // Deop
-        player.setOp(false);
-
         // Set gamemode to survival
         player.setGameMode(GameMode.SURVIVAL);
 

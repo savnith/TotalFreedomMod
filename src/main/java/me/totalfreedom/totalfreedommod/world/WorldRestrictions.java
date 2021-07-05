@@ -52,15 +52,8 @@ public class WorldRestrictions extends FreedomService
 
     public boolean doRestrict(Player player)
     {
-        if (!plugin.pl.getData(player).isMasterBuilder() && plugin.pl.canManageMasterBuilders(player.getName()))
-        {
-            if (player.getWorld().equals(plugin.wm.masterBuilderWorld.getWorld()))
-            {
-                return true;
-            }
-        }
-
-        return !plugin.al.isAdmin(player) && player.getWorld().equals(plugin.wm.adminworld.getWorld());
+        return (player.hasPermission("totalfreedommod.worlds.adminworld") && player.getWorld().equals(plugin.wm.adminworld.getWorld()))
+                || (player.hasPermission("totalfreedommod.worlds.masterbuilderworld") && player.getWorld().equals(plugin.wm.masterBuilderWorld.getWorld()));
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

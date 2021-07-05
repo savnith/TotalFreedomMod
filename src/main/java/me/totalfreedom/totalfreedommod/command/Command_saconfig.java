@@ -41,7 +41,11 @@ public class Command_saconfig extends FreedomCommand
             case "clean":
             {
                 checkConsole();
-                checkRank(Rank.SENIOR_ADMIN);
+                if (!sender.hasPermission("totalfreedommod.command.saconfig.clean"))
+                {
+                    noPerms();
+                    return true;
+                }
 
                 FUtil.adminAction(sender.getName(), "Cleaning the admin list", true);
                 plugin.al.deactivateOldEntries(true);
@@ -52,7 +56,11 @@ public class Command_saconfig extends FreedomCommand
 
             case "reload":
             {
-                checkRank(Rank.SENIOR_ADMIN);
+                if (!sender.hasPermission("totalfreedommod.command.saconfig.reload"))
+                {
+                    noPerms();
+                    return true;
+                }
 
                 FUtil.adminAction(sender.getName(), "Reloading the admin list", true);
                 plugin.al.load();
@@ -63,7 +71,12 @@ public class Command_saconfig extends FreedomCommand
             case "setrank":
             {
                 checkConsole();
-                checkRank(Rank.SENIOR_ADMIN);
+
+                if (!sender.hasPermission("totalfreedommod.command.saconfig.setrank"))
+                {
+                    noPerms();
+                    return true;
+                }
 
                 if (args.length < 3)
                 {
@@ -125,7 +138,11 @@ public class Command_saconfig extends FreedomCommand
                     return false;
                 }
 
-                checkRank(Rank.ADMIN);
+                if (!sender.hasPermission("totalfreedommod.command.saconfig.info"))
+                {
+                    noPerms();
+                    return true;
+                }
 
                 Admin admin = plugin.al.getEntryByName(args[1]);
 
@@ -158,7 +175,11 @@ public class Command_saconfig extends FreedomCommand
                 }
 
                 checkConsole();
-                checkRank(Rank.ADMIN);
+                if (!sender.hasPermission("totalfreedommod.command.saconfig.add"))
+                {
+                    noPerms();
+                    return true;
+                }
 
                 // Player already admin?
                 final Player player = getPlayer(args[1]);
@@ -240,11 +261,6 @@ public class Command_saconfig extends FreedomCommand
                     msg(player, "You have been unfrozen.");
                 }
 
-                if (!player.isOp())
-                {
-                    player.setOp(true);
-                    msg(player, YOU_ARE_OP);
-                }
                 return true;
             }
 
@@ -256,7 +272,11 @@ public class Command_saconfig extends FreedomCommand
                 }
 
                 checkConsole();
-                checkRank(Rank.ADMIN);
+                if (!sender.hasPermission("totalfreedommod.command.saconfig.remove"))
+                {
+                    noPerms();
+                    return true;
+                }
 
                 Player player = getPlayer(args[1]);
                 Admin admin = player != null ? plugin.al.getAdmin(player) : plugin.al.getEntryByName(args[1]);

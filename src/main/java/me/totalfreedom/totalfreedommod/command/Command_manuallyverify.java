@@ -47,8 +47,6 @@ public class Command_manuallyverify extends FreedomCommand
         }
 
         FUtil.adminAction(sender.getName(), "Manually verifying player " + player.getName(), false);
-        player.setOp(true);
-        msg(player, YOU_ARE_OP);
 
         if (plugin.pl.getPlayer(player).getFreezeData().isFrozen())
         {

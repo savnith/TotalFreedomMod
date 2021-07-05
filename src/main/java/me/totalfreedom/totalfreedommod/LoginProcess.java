@@ -191,7 +191,6 @@ public class LoginProcess extends FreedomService
         final PlayerData playerData = plugin.pl.getData(player);
 
         player.sendTitle(FUtil.colorize(ConfigEntry.SERVER_LOGIN_TITLE.getString()), FUtil.colorize(ConfigEntry.SERVER_LOGIN_SUBTITLE.getString()), 20, 100, 60);
-        player.setOp(true);
 
         if (TELEPORT_ON_JOIN.contains(player.getName()) || ConfigEntry.AUTO_TP.getBoolean())
         {

@@ -63,7 +63,7 @@ public class AntiSpam extends FreedomService
     {
         final Player player = event.getPlayer();
 
-        if (plugin.al.isAdmin(player))
+        if (player.hasPermission("totalfreedommod.bypasses.antispam"))
         {
             return;
         }

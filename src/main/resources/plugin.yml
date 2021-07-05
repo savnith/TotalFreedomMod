@@ -15,3 +15,73 @@ softdepend:
   - Votifier
 authors: [Madgeek1450, Prozza]
 api-version: "1.16"
+permissions:
+  totalfreedommod.bypasses.antispam:
+    description: Allows you to bypass the built-in antispam.
+    default: false
+  totalfreedommod.bypasses.armor_stand_blocker:
+    description: Allows you to place armor stands, regardless of if they are disabled.
+    default: false
+  totalfreedommod.bypasses.book_blocker:
+    description: Allows you to interact with written books.
+    default: false
+  totalfreedommod.bypasses.command_sign_blocker:
+    description: Allows you to place signs with the "run_command" JSON component.
+    default: false
+  totalfreedommod.bypasses.death_potion_blocker:
+    description: Allows you to use death potions.
+    default: false
+  totalfreedommod.bypasses.fire_blocker:
+    description: Allows you to place fire, regardless of if fire placement is disabled.
+    default: false
+  totalfreedommod.bypasses.jukebox_blocker:
+    description: Allows you to place jukeboxes, regardless of if they are disabled.
+    default: false
+  totalfreedommod.bypasses.lava_blocker:
+    description: Allows you to place lava, regardless of if lava placement is disabled.
+    default: false
+  totalfreedommod.bypasses.malicious_block_blocker:
+    description: Allows you to interact with jigsaws, structure blocks, and respawn anchors.
+    default: false
+  totalfreedommod.bypasses.mcpe_28723:
+    description: Allows you to right click beds in biomes where they explode.
+    default: false
+  totalfreedommod.bypasses.minecart_blocker:
+    description: Allows you to place minecarts, regardless if they are disabled.
+    default: false
+  totalfreedommod.bypasses.nonuke:
+    description: Allows you to bypass the nuker protection.
+    default: false
+  totalfreedommod.bypasses.pvp_blocker.creative:
+    description: Allows you to PVP other users whilst in creative mode.
+    default: false
+  totalfreedommod.bypasses.pvp_blocker.disabled:
+    description: Allows you to PVP other users, regardless if PVP is disabled for you.
+    default: false
+  totalfreedommod.bypasses.pvp_blocker.disabled_others:
+    description: Allows you to PVP other users, regardless if PVP is disabled for them.
+    default: false
+  totalfreedommod.bypasses.pvp_blocker.god:
+    description: Allows you to PVP other users whilst in god mode.
+    default: false
+  totalfreedommod.bypasses.sign_interact_blocker:
+    description: Allows you to interact with signs.
+    default: false
+  totalfreedommod.bypasses.spawn_egg_blocker:
+    description: Allows you to use spawn eggs.
+    default: false
+  totalfreedommod.bypasses.spawner_blocker:
+    description: Allows you to place spawners, regardless if they are disabled.
+    default: false
+  totalfreedommod.bypasses.tnt_minecart_blocker:
+    description: Allows you to place TNT minecarts, regardless if they are disabled.
+    default: false
+  totalfreedommod.bypasses.water_blocker:
+    description: Allows you to place water, regardless of if water placement is disabled.
+    default: false
+  totalfreedommod.worlds.adminworld:
+    description: Allows you to interact with the Admin world.
+    default: false
+  totalfreedommod.worlds.masterbuilderworld:
+    description: Allows you to interact with the Master Builder world.
+    default: false

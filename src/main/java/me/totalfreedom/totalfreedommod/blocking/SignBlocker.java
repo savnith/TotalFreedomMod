@@ -30,8 +30,13 @@ public class SignBlocker extends FreedomService
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerPlaceBlock(BlockPlaceEvent event)
     {
-
         final Player player = event.getPlayer();
+
+        if (player.hasPermission("totalfreedommod.bypasses.command_sign_blocker"))
+        {
+            return;
+        }
+
         if (Tag.SIGNS.getValues().contains(event.getBlock().getType()))
         {
             ItemStack sign = event.getItemInHand();
@@ -55,6 +60,13 @@ public class SignBlocker extends FreedomService
     public void onPlayerInteractSign(PlayerInteractEvent event)
     {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
+        {
+            return;
+        }
+
+        final Player player = event.getPlayer();
+
+        if (player.hasPermission("totalfreedommod.bypasses.sign_interact_blocker"))
         {
             return;
         }

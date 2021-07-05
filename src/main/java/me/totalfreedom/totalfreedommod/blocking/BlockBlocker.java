@@ -39,7 +39,7 @@ public class BlockBlocker extends FreedomService
         {
             case LAVA:
             {
-                if (!ConfigEntry.ALLOW_LAVA_PLACE.getBoolean())
+                if (!ConfigEntry.ALLOW_LAVA_PLACE.getBoolean() && !player.hasPermission("totalfreedommod.bypasses.lava_blocker"))
                 {
                     player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
                     player.sendMessage(ChatColor.GRAY + "Lava placement is currently disabled.");
@@ -49,7 +49,7 @@ public class BlockBlocker extends FreedomService
             }
             case WATER:
             {
-                if (!ConfigEntry.ALLOW_WATER_PLACE.getBoolean())
+                if (!ConfigEntry.ALLOW_WATER_PLACE.getBoolean() && !player.hasPermission("totalfreedommod.bypasses.water_blocker"))
                 {
                     player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
                     player.sendMessage(ChatColor.GRAY + "Water placement is currently disabled.");
@@ -61,7 +61,7 @@ public class BlockBlocker extends FreedomService
             case FIRE:
             case SOUL_FIRE:
             {
-                if (!ConfigEntry.ALLOW_FIRE_PLACE.getBoolean())
+                if (!ConfigEntry.ALLOW_FIRE_PLACE.getBoolean() && !player.hasPermission("totalfreedommod.bypasses.fire_blocker"))
                 {
                     player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
                     player.sendMessage(ChatColor.GRAY + "Fire placement is currently disabled.");
@@ -71,7 +71,7 @@ public class BlockBlocker extends FreedomService
             }
             case STRUCTURE_BLOCK:
             {
-                if (!ConfigEntry.ALLOW_STRUCTURE_BLOCKS.getBoolean())
+                if (!ConfigEntry.ALLOW_STRUCTURE_BLOCKS.getBoolean() && !player.hasPermission("totalfreedommod.bypasses.malicious_block_blocker"))
                 {
                     player.sendMessage(ChatColor.GRAY + "Structure blocks are disabled.");
                     player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
@@ -81,7 +81,7 @@ public class BlockBlocker extends FreedomService
             }
             case JIGSAW:
             {
-                if (!ConfigEntry.ALLOW_JIGSAWS.getBoolean())
+                if (!ConfigEntry.ALLOW_JIGSAWS.getBoolean() && !player.hasPermission("totalfreedommod.bypasses.malicious_block_blocker"))
                 {
                     player.sendMessage(ChatColor.GRAY + "Jigsaws are disabled.");
                     player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
@@ -91,7 +91,7 @@ public class BlockBlocker extends FreedomService
             }
             case GRINDSTONE:
             {
-                if (!ConfigEntry.ALLOW_GRINDSTONES.getBoolean())
+                if (!ConfigEntry.ALLOW_GRINDSTONES.getBoolean() && !player.hasPermission("totalfreedommod.bypasses.malicious_block_blocker"))
                 {
                     player.sendMessage(ChatColor.GRAY + "Grindstones are disabled.");
                     player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
@@ -101,7 +101,7 @@ public class BlockBlocker extends FreedomService
             }
             case JUKEBOX:
             {
-                if (!ConfigEntry.ALLOW_JUKEBOXES.getBoolean())
+                if (!ConfigEntry.ALLOW_JUKEBOXES.getBoolean() && !player.hasPermission("totalfreedommod.bypasses.jukebox_blocker"))
                 {
                     player.sendMessage(ChatColor.GRAY + "Jukeboxes are disabled.");
                     player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));

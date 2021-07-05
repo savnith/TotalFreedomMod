@@ -35,7 +35,12 @@ public class Command_myadmin extends FreedomCommand
         // -o switch
         if (args[0].equals("-o"))
         {
-            checkRank(Rank.SENIOR_ADMIN);
+            if (!sender.hasPermission("totalfreedommod.command.myadmin.others"))
+            {
+                noPerms();
+                return true;
+            }
+
             init = playerSender;
             targetPlayer = getPlayer(args[1]);
             if (targetPlayer == null)
