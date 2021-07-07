@@ -7,7 +7,9 @@ import java.util.Objects;
 import java.util.Set;
 import me.totalfreedom.totalfreedommod.FreedomService;
 import me.totalfreedom.totalfreedommod.config.YamlConfig;
+import me.totalfreedom.totalfreedommod.event.PlayerSanctionEvent;
 import me.totalfreedom.totalfreedommod.util.FLog;
+import org.bukkit.event.EventHandler;
 
 public class PunishmentList extends FreedomService
 {
@@ -56,6 +58,12 @@ public class PunishmentList extends FreedomService
     {
         saveAll();
         FLog.info("Saved " + punishments.size() + " player bans");
+    }
+
+    @EventHandler
+    public void onPlayerSanction(PlayerSanctionEvent event)
+    {
+        logPunishment(event.getPunishment());
     }
 
     public void saveAll()

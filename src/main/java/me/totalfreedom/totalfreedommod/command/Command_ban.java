@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import me.totalfreedom.totalfreedommod.banning.Ban;
+import me.totalfreedom.totalfreedommod.event.PlayerSanctionEvent;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
 import me.totalfreedom.totalfreedommod.punishments.Punishment;
 import me.totalfreedom.totalfreedommod.punishments.PunishmentType;
@@ -172,8 +173,8 @@ public class Command_ban extends FreedomCommand
         }
 
         // Log ban
-        plugin.pul.logPunishment(new Punishment(username, ips.get(0), sender.getName(), PunishmentType.BAN, reason));
-
+        PlayerSanctionEvent event = new PlayerSanctionEvent(username, sender.getName(), ips.get(0), PunishmentType.BAN, reason);
+        server.getPluginManager().callEvent(event);
         return true;
     }
 }

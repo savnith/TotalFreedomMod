@@ -199,7 +199,7 @@ public class Command_saconfig extends FreedomCommand
                     FUtil.adminAction(sender.getName(), "Adding " + player.getName() + " to the admin list", true);
                     admin = new Admin(player);
 
-                    plugin.al.addAdmin(admin);
+                    plugin.al.addAdmin(admin, sender, player);
                     plugin.rm.updateDisplay(player);
                 }
                 else // Existing admin
@@ -268,23 +268,7 @@ public class Command_saconfig extends FreedomCommand
                 }
 
                 FUtil.adminAction(sender.getName(), "Removing " + admin.getName() + " from the admin list", true);
-                admin.setActive(false);
-
-                plugin.al.save(admin);
-                plugin.al.updateTables();
-                if (player != null)
-                {
-                    plugin.rm.updateDisplay(player);
-                    plugin.pl.getPlayer(player).setAdminChat(false);
-                }
-
-                if (plugin.dc.enabled && ConfigEntry.DISCORD_ROLE_SYNC.getBoolean())
-                {
-                    Discord.syncRoles(admin, plugin.pl.getData(admin.getName()).getDiscordID());
-                }
-
-                plugin.ptero.updateAccountStatus(admin);
-
+                plugin.al.removeAdmin(admin, sender, player);
                 return true;
             }
 

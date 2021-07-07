@@ -19,6 +19,8 @@ import javax.security.auth.login.LoginException;
 import me.totalfreedom.totalfreedommod.FreedomService;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
+import me.totalfreedom.totalfreedommod.event.admin.AdminChatEvent;
+import me.totalfreedom.totalfreedommod.event.admin.AdminRemovedEvent;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FLog;
@@ -393,6 +395,15 @@ public class Discord extends FreedomService
         }
     }
 
+    /*@EventHandler(priority = EventPriority.MONITOR)
+    public void onAdminChat(AdminChatEvent event)
+    {
+        if (event.isFromInGame())
+        {
+            messageAdminChatChannel(event.getSenderName() + " \u00BB " + event.getMessage());
+        }
+    }*/
+
     public void messageChatChannel(String message)
     {
         String chat_channel_id = ConfigEntry.DISCORD_CHAT_CHANNEL_ID.getString();
@@ -527,6 +538,24 @@ public class Discord extends FreedomService
         MessageEmbed embed = embedBuilder.build();
         channel.sendMessage(embed).complete();
         return true;
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onAdminRemoval(AdminRemovedEvent event)
+    {
+        if (!(enabled && ConfigEntry.DISCORD_ROLE_SYNC.getBoolean()))
+        {
+            return;
+        }
+
+        if (event.getPlayer() != null)
+        {
+            syncRoles(event.getAdmin(), plugin.pl.getData(event.getPlayer()).getDiscordID());
+        }
+        else
+        {
+            syncRoles(event.getAdmin(), plugin.pl.getData(event.getAdmin().getName()).getDiscordID());
+        }
     }
 
     // Do no ask why this is here. I spent two hours trying to make a simple thing work

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import me.totalfreedom.totalfreedommod.FreedomService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
+import me.totalfreedom.totalfreedommod.event.shop.ReactionEndEvent;
+import me.totalfreedom.totalfreedommod.event.shop.ReactionStartEvent;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
 import me.totalfreedom.totalfreedommod.util.FLog;
 import me.totalfreedom.totalfreedommod.util.FUtil;
@@ -21,12 +23,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Shop extends FreedomService
 {
@@ -77,6 +82,15 @@ public class Shop extends FreedomService
             return;
         }
 
+        ReactionStartEvent event = new ReactionStartEvent();
+        server.getPluginManager().callEvent(event);
+
+        if (event.isCancelled())
+        {
+            FLog.debug("What the fuck");
+            return;
+        }
+
         reactionString = FUtil.randomAlphanumericString(ConfigEntry.SHOP_REACTIONS_STRING_LENGTH.getInteger());
 
         FUtil.bcastMsg(prefix + ChatColor.AQUA + "Enter the code above to win " + ChatColor.GOLD + coinsPerReactionWin + ChatColor.AQUA + " coins!", false);
@@ -97,9 +111,9 @@ public class Shop extends FreedomService
             @Override
             public void run()
             {
-                if ((seconds -= 1) == 0)
+                if ((seconds -= 1) <= 0)
                 {
-                    endReaction(null);
+                    endReaction(null, reactionString);
                 }
                 else
                 {
@@ -113,24 +127,16 @@ public class Shop extends FreedomService
         }.runTaskTimer(plugin, 0, 20);
     }
 
-    public void endReaction(String winner)
+    public void endReactionAsync(@Nullable Player winner, @NotNull String reactionString)
     {
-        countdownTask.cancel();
-        countdownBar.removeAll();
-        countdownBar = null;
-        reactionString = "";
+        ReactionEndEvent event = new ReactionEndEvent(winner, reactionString, true);
+        server.getPluginManager().callEvent(event);
+    }
 
-        if (winner != null)
-        {
-            Date currentTime = new Date();
-            long seconds = (currentTime.getTime() - reactionStartTime.getTime()) / 1000;
-            FUtil.bcastMsg(prefix + ChatColor.GREEN + winner + ChatColor.AQUA + " won in " + seconds + " seconds!", false);
-            startReactionTimer();
-            return;
-        }
-
-        FUtil.bcastMsg(prefix + ChatColor.RED + "No one reacted fast enough", false);
-        startReactionTimer();
+    public void endReaction(@Nullable Player winner, @NotNull String reactionString)
+    {
+        ReactionEndEvent event = new ReactionEndEvent(winner, reactionString);
+        server.getPluginManager().callEvent(event);
     }
 
     @Override
@@ -140,6 +146,82 @@ public class Shop extends FreedomService
         {
             reactions.cancel();
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPlayerChatFormat(AsyncPlayerChatEvent event)
+    {
+        String message = event.getMessage();
+        Player player = event.getPlayer();
+
+        if (ConfigEntry.SHOP_ENABLED.getBoolean()
+                && ConfigEntry.SHOP_REACTIONS_ENABLED.getBoolean()
+                && !plugin.sh.reactionString.isEmpty() && message.equals(plugin.sh.reactionString))
+        {
+            event.setCancelled(true);
+            plugin.sh.endReactionAsync(player, message);
+         }
+    }
+
+    @EventHandler
+    public void onReactionStart(ReactionStartEvent event)
+    {
+        if (countdownTask != null || countdownBar != null)
+        {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onReactionEnd(ReactionEndEvent event)
+    {
+        if (countdownTask == null)
+        {
+            FLog.warning("Tried to end a reaction that didn't exist, WTF?");
+            return;
+        }
+        else
+        {
+            countdownTask.cancel();
+            countdownTask = null;
+        }
+
+        if (countdownBar != null)
+        {
+            countdownBar.removeAll();
+            countdownBar = null;
+        }
+
+        if (!event.hasWinner())
+        {
+            FUtil.bcastMsg(prefix + ChatColor.RED + "No one reacted fast enough", false);
+        }
+        else
+        {
+            Player winner = event.getWinner();
+            PlayerData data = plugin.pl.getData(winner);
+
+            data.setCoins(data.getCoins() + plugin.sh.coinsPerReactionWin);
+
+            try
+            {
+                plugin.pl.save(data);
+            }
+            catch (Exception ex)
+            {
+                FLog.severe("Failed to save player data for " + winner.getName());
+                FLog.severe(ex);
+            }
+
+            Date currentTime = new Date();
+            long seconds = (currentTime.getTime() - reactionStartTime.getTime()) / 1000;
+            FUtil.bcastMsg(prefix + ChatColor.GREEN + winner.getName() + ChatColor.AQUA + " won in " + seconds + " seconds!", false);
+
+            winner.sendMessage(ChatColor.GREEN + "You have been given " + ChatColor.GOLD + plugin.sh.coinsPerReactionWin + ChatColor.GREEN + " coins!");
+        }
+
+        reactionString = "";
+        startReactionTimer();
     }
 
     public String getShopPrefix()

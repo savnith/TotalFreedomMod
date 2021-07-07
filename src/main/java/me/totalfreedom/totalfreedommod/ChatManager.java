@@ -3,6 +3,7 @@ package me.totalfreedom.totalfreedommod;
 import com.google.common.base.Strings;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
+import me.totalfreedom.totalfreedommod.event.admin.AdminChatEvent;
 import me.totalfreedom.totalfreedommod.player.FPlayer;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
 import me.totalfreedom.totalfreedommod.rank.Displayable;
@@ -10,7 +11,6 @@ import me.totalfreedom.totalfreedommod.util.FLog;
 import me.totalfreedom.totalfreedommod.util.FSync;
 import me.totalfreedom.totalfreedommod.util.FUtil;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.command.CommandSender;
@@ -53,17 +53,6 @@ public class ChatManager extends FreedomService
         // Format colors and strip &k
         message = FUtil.colorize(message);
         message = message.replaceAll(ChatColor.MAGIC.toString(), "&k");
-
-        if (ConfigEntry.SHOP_ENABLED.getBoolean() && ConfigEntry.SHOP_REACTIONS_ENABLED.getBoolean() && !plugin.sh.reactionString.isEmpty() && message.equals(plugin.sh.reactionString))
-        {
-            event.setCancelled(true);
-            PlayerData data = plugin.pl.getData(player);
-            data.setCoins(data.getCoins() + plugin.sh.coinsPerReactionWin);
-            plugin.pl.save(data);
-            plugin.sh.endReaction(player.getName());
-            player.sendMessage(ChatColor.GREEN + "You have been given " + ChatColor.GOLD + plugin.sh.coinsPerReactionWin + ChatColor.GREEN + " coins!");
-            return;
-        }
 
         if (!ConfigEntry.TOGGLE_CHAT.getBoolean() && !plugin.al.isAdmin(player))
         {
@@ -136,7 +125,7 @@ public class ChatManager extends FreedomService
         event.setFormat(format);
 
         // Send to discord
-        if (!ConfigEntry.ADMIN_ONLY_MODE.getBoolean() && !Bukkit.hasWhitelist() && !plugin.pl.getPlayer(player).isMuted() && !plugin.tfg.inGuildChat(player))
+        if (!ConfigEntry.ADMIN_ONLY_MODE.getBoolean() && !server.hasWhitelist() && !plugin.pl.getPlayer(player).isMuted() && !plugin.tfg.inGuildChat(player))
         {
             plugin.dc.messageChatChannel(player.getName() + " \u00BB " + ChatColor.stripColor(message));
         }
@@ -153,11 +142,31 @@ public class ChatManager extends FreedomService
         return color + display.getAbbr();
     }
 
+    /*@EventHandler
+    public void onAdminChat(AdminChatEvent event)
+    {
+        String prefix = event.getPrefix();
+
+        String name = event.getSenderName();
+        Displayable display = event.getDisplay();
+        String message = event.getMessage();
+
+        if (event.isFromInGame())
+        {
+            FLog.info("[" + ChatColor.AQUA + "ADMIN" + ChatColor.RESET + "] " + ChatColor.DARK_RED + name + " " + ChatColor.DARK_GRAY + "[" + getColoredTag(display) + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + ": " + ChatColor.GOLD + FUtil.colorize(message), true);
+        }
+
+
+    }
+    */
+
     public void adminChat(CommandSender sender, String message)
     {
         Displayable display = plugin.rm.getDisplay(sender);
-        FLog.info("[ADMIN] " + sender.getName() + " " + display.getTag() + ": " + message, true);
-        plugin.dc.messageAdminChatChannel(sender.getName() + " \u00BB " + message);
+        FLog.info("[" + ChatColor.AQUA + "ADMIN" + ChatColor.RESET + "] " + ChatColor.DARK_RED + sender.getName() + " " + ChatColor.DARK_GRAY + "[" + getColoredTag(display) + ChatColor.DARK_GRAY + "]" + ChatColor.RESET + ": " + ChatColor.GOLD + FUtil.colorize(message), true);
+
+        /*AdminChatEvent acEvent = new AdminChatEvent(sender, message);
+        server.getPluginManager().callEvent(acEvent);*/
 
         server.getOnlinePlayers().stream().filter(player -> plugin.al.isAdmin(player)).forEach(player ->
         {

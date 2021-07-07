@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import me.totalfreedom.totalfreedommod.TotalFreedomMod;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
+import me.totalfreedom.totalfreedommod.event.admin.AdminChatEvent;
 import me.totalfreedom.totalfreedommod.rank.Displayable;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.rank.Title;
@@ -96,6 +97,8 @@ public class DiscordToAdminChatListener extends ListenerAdapter
                 }
                 player.spigot().sendMessage(builder.create());
 
+                /*AdminChatEvent acEvent = new AdminChatEvent(member.getEffectiveName(), getDisplay(member), msg.getContentDisplay(), false, true);
+                Bukkit.getPluginManager().callEvent(acEvent);*/
             });
         }
     }

@@ -6,10 +6,12 @@ import java.util.List;
 import joptsimple.internal.Strings;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
+import me.totalfreedom.totalfreedommod.event.admin.AdminRemovedEvent;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FLog;
 import me.totalfreedom.totalfreedommod.util.FUtil;
 import me.totalfreedom.totalfreedommod.util.Response;
+import org.bukkit.event.EventHandler;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -210,5 +212,11 @@ public class Pterodactyl extends FreedomService
     public void setEnabled(boolean enabled)
     {
         this.enabled = enabled;
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onAdminRemoval(AdminRemovedEvent event)
+    {
+        updateAccountStatus(event.getAdmin());
     }
 }

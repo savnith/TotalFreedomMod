@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import me.totalfreedom.totalfreedommod.FreedomService;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
+import me.totalfreedom.totalfreedommod.event.admin.AdminAddedEvent;
+import me.totalfreedom.totalfreedommod.event.admin.AdminRemovedEvent;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FLog;
 import me.totalfreedom.totalfreedommod.util.FUtil;
@@ -253,11 +255,19 @@ public class AdminList extends FreedomService
         return admin != null && admin.getName().equalsIgnoreCase(player.getName());
     }
 
-    public boolean addAdmin(Admin admin)
+    public boolean addAdmin(Admin admin, CommandSender sender, Player player)
     {
         if (!admin.isValid())
         {
             FLog.warning("Could not add admin: " + admin.getName() + ". Admin is missing details!");
+            return false;
+        }
+
+        AdminAddedEvent event = new AdminAddedEvent(admin, sender, player);
+        server.getPluginManager().callEvent(event);
+        if (event.isCancelled())
+        {
+            FLog.debug("Not adding admin: " + admin.getName() + ". AdminAddedEvent was cancelled!");
             return false;
         }
 
@@ -271,7 +281,25 @@ public class AdminList extends FreedomService
         return true;
     }
 
-    public boolean removeAdmin(Admin admin)
+    public boolean removeAdmin(Admin admin, CommandSender sender, Player player)
+    {
+        AdminRemovedEvent event = new AdminRemovedEvent(admin, sender, player);
+        server.getPluginManager().callEvent(event);
+        if (event.isCancelled())
+        {
+            FLog.debug("Not removing admin: " + admin.getName() + ". AdminRemovedEvent was cancelled!");
+            return false;
+        }
+
+        admin.setActive(false);
+
+        plugin.al.save(admin);
+        plugin.al.updateTables();
+
+        return true;
+    }
+
+    public boolean deleteAdmin(Admin admin, CommandSender sender, Player player)
     {
         if (admin.getRank().isAtLeast(Rank.ADMIN))
         {

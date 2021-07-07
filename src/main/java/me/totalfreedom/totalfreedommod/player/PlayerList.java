@@ -11,11 +11,13 @@ import java.util.Objects;
 import me.totalfreedom.totalfreedommod.FreedomService;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
+import me.totalfreedom.totalfreedommod.event.admin.AdminRemovedEvent;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FLog;
 import me.totalfreedom.totalfreedommod.util.FUtil;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 
 public class PlayerList extends FreedomService
 {
@@ -308,5 +310,13 @@ public class PlayerList extends FreedomService
     public Map<String, PlayerData> getDataMap()
     {
         return dataMap;
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onAdminRemoval(AdminRemovedEvent event)
+    {
+        FPlayer fplayer = getPlayer(event.getPlayer());
+        fplayer.setAdminChat(false);
+        fplayer.setCommandSpy(false);
     }
 }

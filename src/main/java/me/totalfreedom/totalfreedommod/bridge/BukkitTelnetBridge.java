@@ -10,6 +10,7 @@ import me.totalfreedom.bukkittelnet.api.TelnetRequestDataTagsEvent;
 import me.totalfreedom.bukkittelnet.session.ClientSession;
 import me.totalfreedom.totalfreedommod.FreedomService;
 import me.totalfreedom.totalfreedommod.admin.Admin;
+import me.totalfreedom.totalfreedommod.event.admin.AdminRemovedEvent;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FLog;
 import org.bukkit.entity.Player;
@@ -92,6 +93,12 @@ public class BukkitTelnetBridge extends FreedomService
 
             playerTags.put("tfm.essentialsBridge.getNickname", plugin.esb.getNickname(player.getName()));
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onAdminRemoval(AdminRemovedEvent event)
+    {
+        killTelnetSessions(event.getAdmin().getName());
     }
 
     public BukkitTelnet getBukkitTelnetPlugin()

@@ -4,6 +4,7 @@ import java.util.Objects;
 import me.totalfreedom.totalfreedommod.FreedomService;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
+import me.totalfreedom.totalfreedommod.event.admin.AdminRemovedEvent;
 import me.totalfreedom.totalfreedommod.player.FPlayer;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
 import me.totalfreedom.totalfreedommod.util.FUtil;
@@ -316,6 +317,15 @@ public class RankManager extends FreedomService
         if (!team.hasPlayer(player))
         {
             team.addPlayer(player);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onAdminRemoval(AdminRemovedEvent event)
+    {
+        if (event.getPlayer() != null)
+        {
+            updateDisplay(event.getPlayer());
         }
     }
 }
