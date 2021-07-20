@@ -75,12 +75,6 @@
         </repository>
 
         <repository>
-            <id>dv8tion</id>
-            <name>m2-dv8tion</name>
-            <url>https://m2.dv8tion.net/releases/</url>
-        </repository>
-
-        <repository>
             <id>playpro</id>
             <url>https://maven.playpro.com/</url>
         </repository>
@@ -184,23 +178,9 @@
         </dependency>
 
         <dependency>
-            <groupId>net.dv8tion</groupId>
-            <artifactId>JDA</artifactId>
-            <version>4.2.1_255</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>net.coreprotect</groupId>
             <artifactId>coreprotect</artifactId>
             <version>19.3</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sk89q.worldguard</groupId>
-            <artifactId>worldguard-bukkit</artifactId>
-            <version>7.0.4</version>
             <scope>provided</scope>
         </dependency>
 
@@ -215,13 +195,6 @@
             <groupId>com.github.vexsoftware</groupId>
             <artifactId>votifier</artifactId>
             <version>v1.9</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>net.goldtreeservers</groupId>
-            <artifactId>worldguardextraflags</artifactId>
-            <version>4.0.0</version>
             <scope>provided</scope>
         </dependency>
 

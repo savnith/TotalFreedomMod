@@ -141,43 +141,6 @@ public class PlayerList extends FreedomService
         return new PlayerData(resultSet);
     }
 
-    public Boolean isPlayerImpostor(Player player)
-    {
-        PlayerData playerData = getData(player);
-        return plugin.dc.enabled
-                && !plugin.al.isAdmin(player)
-                && (playerData.hasVerification())
-                && !playerData.getIps().contains(FUtil.getIp(player));
-    }
-
-    public boolean IsImpostor(Player player)
-    {
-        return isPlayerImpostor(player) || plugin.al.isAdminImpostor(player);
-    }
-
-    public void verify(Player player, String backupCode)
-    {
-        PlayerData playerData = getData(player);
-        if (backupCode != null)
-        {
-            playerData.removeBackupCode(backupCode);
-        }
-
-        playerData.addIp(FUtil.getIp(player));
-        save(playerData);
-
-        if (plugin.al.isAdminImpostor(player))
-        {
-            Admin admin = plugin.al.getEntryByName(player.getName());
-            admin.setLastLogin(new Date());
-            admin.addIp(FUtil.getIp(player));
-            plugin.al.updateTables();
-            plugin.al.save(admin);
-        }
-
-        plugin.rm.updateDisplay(player);
-    }
-
     public void syncIps(Admin admin)
     {
         PlayerData playerData = getData(admin.getName());
@@ -250,7 +213,7 @@ public class PlayerList extends FreedomService
         }
 
         // Create new data if nonexistent
-        FLog.info("Creating new player verification entry for " + player.getName());
+        FLog.info("Creating new player data entry for " + player.getName());
 
         // Create new player
         playerData = new PlayerData(player);

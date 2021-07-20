@@ -204,7 +204,7 @@ public class LoginProcess extends FreedomService
             return;
         }
 
-        if (!playerData.hasVerification() && !playerData.getIps().contains(FUtil.getIp(player)))
+        if (!playerData.getIps().contains(FUtil.getIp(player)))
         {
             playerData.addIp(FUtil.getIp(player));
             plugin.pl.save(playerData);

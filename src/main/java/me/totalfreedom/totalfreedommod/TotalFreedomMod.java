@@ -22,11 +22,9 @@ import me.totalfreedom.totalfreedommod.bridge.EssentialsBridge;
 import me.totalfreedom.totalfreedommod.bridge.LibsDisguisesBridge;
 import me.totalfreedom.totalfreedommod.bridge.TFGuildsBridge;
 import me.totalfreedom.totalfreedommod.bridge.WorldEditBridge;
-import me.totalfreedom.totalfreedommod.bridge.WorldGuardBridge;
 import me.totalfreedom.totalfreedommod.caging.Cager;
 import me.totalfreedom.totalfreedommod.command.CommandLoader;
 import me.totalfreedom.totalfreedommod.config.MainConfig;
-import me.totalfreedom.totalfreedommod.discord.Discord;
 import me.totalfreedom.totalfreedommod.freeze.Freezer;
 import me.totalfreedom.totalfreedommod.fun.ItemFun;
 import me.totalfreedom.totalfreedommod.fun.Jumppads;
@@ -96,7 +94,6 @@ public class TotalFreedomMod extends JavaPlugin
     public SQLite sql;
     public Announcer an;
     public ChatManager cm;
-    public Discord dc;
     public PunishmentList pul;
     public BanManager bm;
     public IndefiniteBanList im;
@@ -126,7 +123,6 @@ public class TotalFreedomMod extends JavaPlugin
     public EntityWiper ew;
     public Sitter st;
     public VanishHandler vh;
-    public Pterodactyl ptero;
     //
     // Bridges
     public BukkitTelnetBridge btb;
@@ -135,7 +131,6 @@ public class TotalFreedomMod extends JavaPlugin
     public CoreProtectBridge cpb;
     public TFGuildsBridge tfg;
     public WorldEditBridge web;
-    public WorldGuardBridge wgb;
 
     public static TotalFreedomMod getPlugin()
     {
@@ -321,7 +316,6 @@ public class TotalFreedomMod extends JavaPlugin
             vo = new Votifier();
             an = new Announcer();
             cm = new ChatManager();
-            dc = new Discord();
             pul = new PunishmentList();
             bm = new BanManager();
             im = new IndefiniteBanList();
@@ -331,7 +325,6 @@ public class TotalFreedomMod extends JavaPlugin
             ew = new EntityWiper();
             st = new Sitter();
             vh = new VanishHandler();
-            ptero = new Pterodactyl();
         }
 
         private void initAdminUtils()
@@ -359,7 +352,6 @@ public class TotalFreedomMod extends JavaPlugin
             ldb = new LibsDisguisesBridge();
             tfg = new TFGuildsBridge();
             web = new WorldEditBridge();
-            wgb = new WorldGuardBridge();
         }
 
         private void initFun()

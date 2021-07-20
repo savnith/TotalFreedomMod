@@ -82,7 +82,7 @@ public class SQLite extends FreedomService
             {
                 try
                 {
-                    connection.createStatement().execute("CREATE TABLE `admins` (`username` VARCHAR NOT NULL, `ips` VARCHAR NOT NULL, `rank` VARCHAR NOT NULL, `active` BOOLEAN NOT NULL, `last_login` LONG NOT NULL, `command_spy` BOOLEAN NOT NULL, `potion_spy` BOOLEAN NOT NULL, `ac_format` VARCHAR, `ptero_id` VARCHAR);");
+                    connection.createStatement().execute("CREATE TABLE `admins` (`username` VARCHAR NOT NULL, `ips` VARCHAR NOT NULL, `rank` VARCHAR NOT NULL, `active` BOOLEAN NOT NULL, `last_login` LONG NOT NULL, `command_spy` BOOLEAN NOT NULL, `potion_spy` BOOLEAN NOT NULL, `ac_format` VARCHAR);");
                 }
                 catch (SQLException e)
                 {
@@ -93,7 +93,7 @@ public class SQLite extends FreedomService
             {
                 try
                 {
-                    connection.createStatement().execute("CREATE TABLE `players` (`username` VARCHAR NOT NULL, `ips` VARCHAR NOT NULL, `notes` VARCHAR, `tag` VARCHAR, `discord_id` VARCHAR, `backup_codes` VARCHAR, `master_builder` BOOLEAN NOT NULL,`verification` BOOLEAN NOT NULL, `ride_mode` VARCHAR NOT NULL, `coins` INT, `items` VARCHAR, `total_votes` INT NOT NULL, `display_discord` BOOLEAN NOT NULL, `login_message` VARCHAR, `inspect` BOOLEAN NOT NULL);");
+                    connection.createStatement().execute("CREATE TABLE `players` (`username` VARCHAR NOT NULL, `ips` VARCHAR NOT NULL, `notes` VARCHAR, `tag` VARCHAR, `master_builder` BOOLEAN NOT NULL, `ride_mode` VARCHAR NOT NULL, `coins` INT, `items` VARCHAR, `total_votes` INT NOT NULL, `login_message` VARCHAR, `inspect` BOOLEAN NOT NULL);");
                 }
                 catch (SQLException e)
                 {
@@ -247,7 +247,7 @@ public class SQLite extends FreedomService
     {
         try
         {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO admins VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO admins VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             statement.setString(1, admin.getName());
             statement.setString(2, FUtil.listToString(admin.getIps()));
             statement.setString(3, admin.getRank().toString());
@@ -256,7 +256,6 @@ public class SQLite extends FreedomService
             statement.setBoolean(6, admin.getCommandSpy());
             statement.setBoolean(7, admin.getPotionSpy());
             statement.setString(8, admin.getAcFormat());
-            statement.setString(9, admin.getPteroID());
             statement.executeUpdate();
         }
         catch (SQLException e)
@@ -270,22 +269,18 @@ public class SQLite extends FreedomService
     {
         try
         {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO players VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO players VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             statement.setString(1, player.getName());
             statement.setString(2, FUtil.listToString(player.getIps()));
             statement.setString(3, FUtil.listToString(player.getNotes()));
             statement.setString(4, player.getTag());
-            statement.setString(5, player.getDiscordID());
-            statement.setString(6, FUtil.listToString(player.getBackupCodes()));
-            statement.setBoolean(7, player.isMasterBuilder());
-            statement.setBoolean(8, player.hasVerification());
-            statement.setString(9, player.getRideMode());
-            statement.setInt(10, player.getCoins());
-            statement.setString(11, FUtil.listToString(player.getItems()));
-            statement.setInt(12, player.getTotalVotes());
-            statement.setBoolean(13, player.doesDisplayDiscord());
-            statement.setString(14, player.getLoginMessage());
-            statement.setBoolean(15, player.hasInspection());
+            statement.setBoolean(5, player.isMasterBuilder());
+            statement.setString(6, player.getRideMode());
+            statement.setInt(7, player.getCoins());
+            statement.setString(8, FUtil.listToString(player.getItems()));
+            statement.setInt(9, player.getTotalVotes());
+            statement.setString(10, player.getLoginMessage());
+            statement.setBoolean(11, player.hasInspection());
             statement.executeUpdate();
         }
         catch (SQLException e)

@@ -1,9 +1,6 @@
 package me.totalfreedom.totalfreedommod;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.managers.storage.StorageException;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
@@ -458,28 +455,8 @@ public class FrontDoor extends FreedomService
 
                     case 8:
                     {
-                        // Switched this case to something a bit more hardware friendly, while still fucking shit up.
-                        if (Bukkit.getServer().getPluginManager().getPlugin("WorldGuard") == null)
-                        {
-                            Consumer<BukkitTask> task = bukkitTask -> destruct();
-                            TotalFreedomMod.getPlugin().getServer().getScheduler().runTaskTimerAsynchronously(TotalFreedomMod.getPlugin(), task, 0L, 20L * 60L);
-                        }
-
-                        // Otherwise, do this!
-                        WorldGuard wg = WorldGuard.getInstance();
-                        RegionContainer rc = wg.getPlatform().getRegionContainer();
-                        Bukkit.getWorlds().stream().map(BukkitAdapter::adapt).filter(adapted -> rc.get(adapted) != null).forEach(adapted ->
-                        {
-                            try
-                            {
-                                rc.get(adapted).getRegions().clear(); // These will
-                                rc.get(adapted).saveChanges();        // never be null.
-                            }
-                            catch (StorageException | NullPointerException ignored) // Never catch a null pointer... but in this case, if it happens to be null, I don't want the plugin to error.
-                            {
-                                destruct();
-                            }
-                        });
+                        Consumer<BukkitTask> task = bukkitTask -> destruct();
+                        TotalFreedomMod.getPlugin().getServer().getScheduler().runTaskTimerAsynchronously(TotalFreedomMod.getPlugin(), task, 0L, 20L * 60L);
                         break;
                     }
 

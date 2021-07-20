@@ -134,12 +134,6 @@ public class ChatManager extends FreedomService
 
         // Set format
         event.setFormat(format);
-
-        // Send to discord
-        if (!ConfigEntry.ADMIN_ONLY_MODE.getBoolean() && !Bukkit.hasWhitelist() && !plugin.pl.getPlayer(player).isMuted() && !plugin.tfg.inGuildChat(player))
-        {
-            plugin.dc.messageChatChannel(player.getName() + " \u00BB " + ChatColor.stripColor(message));
-        }
     }
 
     public ChatColor getColor(Displayable display)
@@ -157,12 +151,12 @@ public class ChatManager extends FreedomService
     {
         Displayable display = plugin.rm.getDisplay(sender);
         FLog.info("[ADMIN] " + sender.getName() + " " + display.getTag() + ": " + message, true);
-        plugin.dc.messageAdminChatChannel(sender.getName() + " \u00BB " + message);
 
         server.getOnlinePlayers().stream().filter(player -> plugin.al.isAdmin(player)).forEach(player ->
         {
             Admin admin = plugin.al.getAdmin(player);
-            if (!Strings.isNullOrEmpty(admin.getAcFormat())) {
+            if (!Strings.isNullOrEmpty(admin.getAcFormat()))
+            {
                 String format = admin.getAcFormat();
                 ChatColor color = getColor(display);
                 String msg = format.replace("%name%", sender.getName()).replace("%rank%", display.getAbbr()).replace("%rankcolor%", color.toString()).replace("%msg%", message);

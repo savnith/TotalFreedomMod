@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
-import me.totalfreedom.totalfreedommod.discord.Discord;
 import me.totalfreedom.totalfreedommod.player.FPlayer;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FUtil;
@@ -107,13 +106,6 @@ public class Command_saconfig extends FreedomCommand
                     plugin.rm.updateDisplay(player);
                 }
 
-                if (plugin.dc.enabled && ConfigEntry.DISCORD_ROLE_SYNC.getBoolean())
-                {
-                    Discord.syncRoles(admin, plugin.pl.getData(admin.getName()).getDiscordID());
-                }
-
-                plugin.ptero.updateAccountStatus(admin);
-
                 msg("Set " + admin.getName() + "'s rank to " + rank.getName());
                 return true;
             }
@@ -187,12 +179,6 @@ public class Command_saconfig extends FreedomCommand
                     }
                 }
 
-                if (plugin.pl.isPlayerImpostor(player))
-                {
-                    msg("This player was labeled as a Player impostor and is not an admin, therefore they cannot be added to the admin list.", ChatColor.RED);
-                    return true;
-                }
-
                 if (admin == null) // New admin
                 {
 
@@ -217,21 +203,10 @@ public class Command_saconfig extends FreedomCommand
                     admin.setActive(true);
                     admin.setLastLogin(new Date());
 
-                    if (plugin.al.isVerifiedAdmin(player))
-                    {
-                        plugin.al.verifiedNoAdmin.remove(player.getName());
-                    }
-
                     plugin.al.save(admin);
                     plugin.al.updateTables();
                     plugin.rm.updateDisplay(player);
-
-                    if (plugin.dc.enabled && ConfigEntry.DISCORD_ROLE_SYNC.getBoolean())
-                    {
-                        Discord.syncRoles(admin, plugin.pl.getData(player).getDiscordID());
-                    }
                 }
-                plugin.ptero.updateAccountStatus(admin);
 
                 final FPlayer fPlayer = plugin.pl.getPlayer(player);
                 if (fPlayer.getFreezeData().isFrozen())
@@ -277,13 +252,6 @@ public class Command_saconfig extends FreedomCommand
                     plugin.rm.updateDisplay(player);
                     plugin.pl.getPlayer(player).setAdminChat(false);
                 }
-
-                if (plugin.dc.enabled && ConfigEntry.DISCORD_ROLE_SYNC.getBoolean())
-                {
-                    Discord.syncRoles(admin, plugin.pl.getData(admin.getName()).getDiscordID());
-                }
-
-                plugin.ptero.updateAccountStatus(admin);
 
                 return true;
             }

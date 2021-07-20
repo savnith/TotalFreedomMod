@@ -71,28 +71,6 @@ public enum ConfigEntry
     SERVER_WHITELIST_MOTD(String.class, "server.motds.whitelist"),
     SERVER_FULL_MOTD(String.class, "server.motds.full"),
     //
-    DISCORD_VERIFICATION(Boolean.class, "discord.verification"),
-    DISCORD_TOKEN(String.class, "discord.token"),
-    DISCORD_REPORT_CHANNEL_ID(String.class, "discord.report_channel_id"),
-    DISCORD_CHAT_CHANNEL_ID(String.class, "discord.chat_channel_id"),
-    DISCORD_ADMINCHAT_CHANNEL_ID(String.class, "discord.adminchat_channel_id"),
-
-    DISCORD_ROLE_SYNC(Boolean.class, "discord.role_sync"),
-    DISCORD_SERVER_ID(String.class, "discord.server_id"),
-    DISCORD_MASTER_BUILDER_ROLE_ID(String.class, "discord.master_builder_role_id"),
-    DISCORD_NEW_ADMIN_ROLE_ID(String.class, "discord.admin_role_id"),
-    DISCORD_SENIOR_ADMIN_ROLE_ID(String.class, "discord.senior_admin_role_id"),
-    DISCORD_DEVELOPER_ROLE_ID(String.class, "discord.developer_role_id"),
-    DISCORD_ASSISTANT_EXECUTIVE_ROLE_ID(String.class, "discord.assistant_executive_role_id"),
-    DISCORD_EXECUTIVE_ROLE_ID(String.class, "discord.executive_role_id"),
-    DISCORD_SERVER_OWNER_ROLE_ID(String.class, "discord.server_owner_role_id"),
-    //
-    PTERO_URL(String.class, "ptero.url"),
-    PTERO_DEFAULT_EMAIL_DOMAIN(String.class, "ptero.default_email_domain"),
-    PTERO_SERVER_UUID(String.class, "ptero.server_uuid"),
-    PTERO_ADMIN_KEY(String.class, "ptero.admin_key"),
-    PTERO_SERVER_KEY(String.class, "ptero.server_key"),
-    //
     SHOP_ENABLED(Boolean.class, "shop.enabled"),
     SHOP_TITLE(String.class, "shop.title"),
     SHOP_PREFIX(String.class, "shop.prefix"),
