@@ -114,23 +114,13 @@ shop:
   # How many coins to voters get per vote?
   coins_per_vote: 20
 
-  # Chat reactions
+  # ChatReactions integration
   reactions:
-
-    # Enable chat reactions?
+    # Should we even do anything if a player wins?
     enabled: true
-
-    # How much time (in seconds) before a new reaction prompt is made
-    interval: 300
-
-    # How much time do players have to react
-    time: 30.0
 
     # How many coins do winners get?
     coins_per_win: 5
-
-    # How long is the random string (in characters)?
-    string_length: 10
 
   # Login messages. Use %name% for usernames, and %rank% for ranks/titles
   login_messages:

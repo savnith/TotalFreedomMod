@@ -54,17 +54,6 @@ public class ChatManager extends FreedomService
         message = FUtil.colorize(message);
         message = message.replaceAll(ChatColor.MAGIC.toString(), "&k");
 
-        if (ConfigEntry.SHOP_ENABLED.getBoolean() && ConfigEntry.SHOP_REACTIONS_ENABLED.getBoolean() && !plugin.sh.reactionString.isEmpty() && message.equals(plugin.sh.reactionString))
-        {
-            event.setCancelled(true);
-            PlayerData data = plugin.pl.getData(player);
-            data.setCoins(data.getCoins() + plugin.sh.coinsPerReactionWin);
-            plugin.pl.save(data);
-            plugin.sh.endReaction(player.getName());
-            player.sendMessage(ChatColor.GREEN + "You have been given " + ChatColor.GOLD + plugin.sh.coinsPerReactionWin + ChatColor.GREEN + " coins!");
-            return;
-        }
-
         if (!ConfigEntry.TOGGLE_CHAT.getBoolean() && !plugin.al.isAdmin(player))
         {
             event.setCancelled(true);

@@ -256,6 +256,12 @@
             <artifactId>org.eclipse.sisu.inject</artifactId>
             <version>0.3.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.videogamesmash12</groupId>
+            <artifactId>chatreactions</artifactId>
+            <version>415e95f</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -30,116 +30,16 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class Shop extends FreedomService
 {
-    public final int coinsPerReactionWin = ConfigEntry.SHOP_REACTIONS_COINS_PER_WIN.getInteger();
-    public final String prefix = ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "Reaction" + ChatColor.DARK_GRAY + "] ";
     private final String LOGIN_MESSAGE_GUI_TITLE = ChatColor.DARK_GREEN + ChatColor.BOLD.toString() + "Login Messages";
-    public String reactionString = "";
-    public Date reactionStartTime;
-    public BukkitTask countdownTask;
-    private BukkitTask reactions;
-    private BossBar countdownBar = null;
 
     @Override
     public void onStart()
     {
-        if (ConfigEntry.SHOP_REACTIONS_ENABLED.getBoolean())
-        {
-            startReactionTimer();
-        }
-    }
-
-    public void startReactionTimer()
-    {
-        long interval = ConfigEntry.SHOP_REACTIONS_INTERVAL.getInteger() * 20L;
-
-        reactions = new BukkitRunnable()
-        {
-
-            @Override
-            public void run()
-            {
-                startReaction();
-            }
-        }.runTaskLater(plugin, interval);
-    }
-
-    public void forceStartReaction()
-    {
-        reactions.cancel();
-        startReaction();
-    }
-
-    public void startReaction()
-    {
-        if (!ConfigEntry.SHOP_ENABLED.getBoolean())
-        {
-            FLog.debug("The shop is not enabled, therefore a reaction did not start.");
-            return;
-        }
-
-        reactionString = FUtil.randomAlphanumericString(ConfigEntry.SHOP_REACTIONS_STRING_LENGTH.getInteger());
-
-        FUtil.bcastMsg(prefix + ChatColor.AQUA + "Enter the code above to win " + ChatColor.GOLD + coinsPerReactionWin + ChatColor.AQUA + " coins!", false);
-
-        reactionStartTime = new Date();
-
-        countdownBar = server.createBossBar(reactionString, BarColor.GREEN, BarStyle.SOLID);
-        for (Player player : server.getOnlinePlayers())
-        {
-            countdownBar.addPlayer(player);
-        }
-        countdownBar.setVisible(true);
-        countdownTask = new BukkitRunnable()
-        {
-            double seconds = 30;
-            final double max = seconds;
-
-            @Override
-            public void run()
-            {
-                if ((seconds -= 1) == 0)
-                {
-                    endReaction(null);
-                }
-                else
-                {
-                    countdownBar.setProgress(seconds / max);
-                    if (!countdownBar.getColor().equals(BarColor.YELLOW) && seconds / max <= 0.25)
-                    {
-                        countdownBar.setColor(BarColor.YELLOW);
-                    }
-                }
-            }
-        }.runTaskTimer(plugin, 0, 20);
-    }
-
-    public void endReaction(String winner)
-    {
-        countdownTask.cancel();
-        countdownBar.removeAll();
-        countdownBar = null;
-        reactionString = "";
-
-        if (winner != null)
-        {
-            Date currentTime = new Date();
-            long seconds = (currentTime.getTime() - reactionStartTime.getTime()) / 1000;
-            FUtil.bcastMsg(prefix + ChatColor.GREEN + winner + ChatColor.AQUA + " won in " + seconds + " seconds!", false);
-            startReactionTimer();
-            return;
-        }
-
-        FUtil.bcastMsg(prefix + ChatColor.RED + "No one reacted fast enough", false);
-        startReactionTimer();
     }
 
     @Override
     public void onStop()
     {
-        if (ConfigEntry.SHOP_REACTIONS_ENABLED.getBoolean())
-        {
-            reactions.cancel();
-        }
     }
 
     public String getShopPrefix()
