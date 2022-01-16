@@ -116,29 +116,10 @@ public class Command_mbconfig extends FreedomCommand
                     msg(PLAYER_NOT_FOUND, ChatColor.RED);
                     return true;
                 }
-
-                if (data.isMasterBuilder() && plugin.pl.isPlayerImpostor(player))
-                {
-                    FUtil.adminAction(sender.getName(), "Re-adding " + data.getName() + " to the Master Builder list", true);
-                    final FreezeData fd = plugin.pl.getPlayer(player).getFreezeData();
-
-                    if (fd.isFrozen())
-                    {
-                        fd.setFrozen(false);
-                    }
-                    if (player != null)
-                    {
-                        plugin.pl.verify(player, null);
-                        plugin.rm.updateDisplay(player);
-                        player.setOp(true);
-                        msg(player, YOU_ARE_OP);
-                    }
-                }
                 else if (!data.isMasterBuilder())
                 {
                     FUtil.adminAction(sender.getName(), "Adding " + data.getName() + " to the Master Builder list", true);
                     data.setMasterBuilder(true);
-                    data.setVerification(true);
                     plugin.pl.save(data);
                     if (player != null)
                     {
@@ -175,10 +156,6 @@ public class Command_mbconfig extends FreedomCommand
 
                 FUtil.adminAction(sender.getName(), "Removing " + data.getName() + " from the Master Builder list", true);
                 data.setMasterBuilder(false);
-                if (data.getDiscordID() == null)
-                {
-                    data.setVerification(false);
-                }
                 plugin.pl.save(data);
                 if (player != null)
                 {

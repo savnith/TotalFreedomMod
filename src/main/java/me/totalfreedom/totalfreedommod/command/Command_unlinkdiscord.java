@@ -18,7 +18,7 @@ public class Command_unlinkdiscord extends FreedomCommand
     {
         if (!plugin.dc.enabled)
         {
-            msg("The Discord verification system is currently disabled.", ChatColor.RED);
+            msg("Discord integration is currently disabled.", ChatColor.RED);
             return true;
         }
 
@@ -32,7 +32,7 @@ public class Command_unlinkdiscord extends FreedomCommand
             }
 
             playerData.setDiscordID(null);
-            msg("Unlinked " + args[0] + "'s discord account.", ChatColor.GREEN);
+            msg("Unlinked " + args[0] + "'s Discord account.", ChatColor.GREEN);
             return true;
         }
 
@@ -43,7 +43,6 @@ public class Command_unlinkdiscord extends FreedomCommand
             return true;
         }
         data.setDiscordID(null);
-        data.setVerification(false);
         plugin.pl.save(data);
         msg("Your Minecraft account has been successfully unlinked from the Discord account.", ChatColor.GREEN);
         return true;

@@ -19,7 +19,7 @@ public class Command_linkdiscord extends FreedomCommand
     {
         if (!plugin.dc.enabled)
         {
-            msg("The Discord verification system is currently disabled.", ChatColor.RED);
+            msg("Discord integration is currently disabled.", ChatColor.RED);
             return true;
         }
 
@@ -33,7 +33,7 @@ public class Command_linkdiscord extends FreedomCommand
             }
 
             playerData.setDiscordID(args[1]);
-            msg("Linked " + args[0] + "'s discord account.", ChatColor.GREEN);
+            msg("Linked " + args[0] + "'s Discord account.", ChatColor.GREEN);
             return true;
         }
 

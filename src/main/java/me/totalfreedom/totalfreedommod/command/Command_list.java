@@ -1,7 +1,6 @@
 package me.totalfreedom.totalfreedommod.command;
 
 import me.totalfreedom.totalfreedommod.admin.Admin;
-import me.totalfreedom.totalfreedommod.admin.AdminList;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.rank.Displayable;
 import me.totalfreedom.totalfreedommod.rank.Rank;
@@ -15,8 +14,8 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-@CommandPermissions(level = Rank.IMPOSTOR, source = SourceType.BOTH)
-@CommandParameters(description = "Lists the real names of all online players.", usage = "/<command> [-s | -i | -f | -v]", aliases = "who,lsit")
+@CommandPermissions(level = Rank.NON_OP, source = SourceType.BOTH)
+@CommandParameters(description = "Lists the real names of all online players.", usage = "/<command> [-s | -f | -v]", aliases = "who,lsit")
 public class Command_list extends FreedomCommand
 {
 
@@ -61,11 +60,6 @@ public class Command_list extends FreedomCommand
                 {
                     checkRank(Rank.ADMIN);
                     listFilter = ListFilter.TELNET_SESSIONS;
-                    break;
-                }
-                case "-i":
-                {
-                    listFilter = ListFilter.IMPOSTORS;
                     break;
                 }
                 case "-f":
@@ -122,10 +116,6 @@ public class Command_list extends FreedomCommand
                 {
                     continue;
                 }
-                if (listFilter == ListFilter.IMPOSTORS && !plugin.al.isAdminImpostor(p))
-                {
-                    continue;
-                }
                 if (listFilter == ListFilter.FAMOUS_PLAYERS && !ConfigEntry.FAMOUS_PLAYERS.getList().contains(p.getName().toLowerCase()))
                 {
                     continue;
@@ -164,7 +154,6 @@ public class Command_list extends FreedomCommand
         ADMINS,
         VANISHED_ADMINS,
         TELNET_SESSIONS,
-        FAMOUS_PLAYERS,
-        IMPOSTORS
+        FAMOUS_PLAYERS
     }
 }

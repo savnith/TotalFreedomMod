@@ -288,8 +288,7 @@ public class Module_schematic extends HTTPDModule
     private boolean isAuthorized(String remoteAddress)
     {
         Admin adminEntry = plugin.al.getEntryByIp(remoteAddress);
-        PlayerData data = plugin.pl.getDataByIp(remoteAddress);
-        return ((adminEntry != null && adminEntry.isActive()) || data != null && data.isMasterBuilder());
+        return ((adminEntry != null && adminEntry.isActive()));
     }
 
     private enum ModuleMode

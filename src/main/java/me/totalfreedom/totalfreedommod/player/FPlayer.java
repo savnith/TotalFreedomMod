@@ -53,7 +53,6 @@ public class FPlayer
     private boolean allCommandsBlocked = false;
 
 
-    private boolean superadminIdVerified = false;
     private String lastCommand = "";
     private String tag = null;
     private int warningCount = 0;
@@ -402,11 +401,6 @@ public class FPlayer
     public CageData getCageData()
     {
         return cageData;
-    }
-
-    public void setSuperadminIdVerified(boolean superadminIdVerified)
-    {
-        this.superadminIdVerified = superadminIdVerified;
     }
 
     public boolean isEditBlocked()

@@ -73,7 +73,6 @@ public enum ConfigEntry
     SERVER_WHITELIST_MOTD(String.class, "server.motds.whitelist"),
     SERVER_FULL_MOTD(String.class, "server.motds.full"),
     //
-    DISCORD_VERIFICATION(Boolean.class, "discord.verification"),
     DISCORD_TOKEN(String.class, "discord.token"),
     DISCORD_REPORT_CHANNEL_ID(String.class, "discord.report_channel_id"),
     DISCORD_CHAT_CHANNEL_ID(String.class, "discord.chat_channel_id"),
@@ -89,6 +88,8 @@ public enum ConfigEntry
     DISCORD_EXECUTIVE_ROLE_ID(String.class, "discord.executive_role_id"),
     DISCORD_SERVER_OWNER_ROLE_ID(String.class, "discord.server_owner_role_id"),
     DISCORD_INVITE_LINK(String.class, "discord.invite_link"),
+    //
+    PD_QUERY_MOJANG_FOR_UUIDLESS_PLAYERS(Boolean.class, "playerdata.query_mojang_for_uuidless_players"),
     //
     PTERO_URL(String.class, "ptero.url"),
     PTERO_DEFAULT_EMAIL_DOMAIN(String.class, "ptero.default_email_domain"),

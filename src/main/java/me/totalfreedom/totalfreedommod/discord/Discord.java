@@ -57,7 +57,6 @@ public class Discord extends FreedomService
 {
 
     public static HashMap<String, PlayerData> LINK_CODES = new HashMap<>();
-    public static HashMap<String, PlayerData> VERIFICATION_CODES = new HashMap<>();
     public static JDA bot = null;
     public ScheduledThreadPoolExecutor RATELIMIT_EXECUTOR;
     public List<CompletableFuture<Message>> sentMessages = new ArrayList<>();
@@ -157,12 +156,6 @@ public class Discord extends FreedomService
 
     public void startBot()
     {
-        boolean verificationEnabled = ConfigEntry.DISCORD_VERIFICATION.getBoolean();
-        if (!verificationEnabled)
-        {
-            FLog.info("Discord Verification has been manually disabled.");
-        }
-
         enabled = !Strings.isNullOrEmpty(ConfigEntry.DISCORD_TOKEN.getString());
         if (!enabled)
         {
@@ -199,22 +192,24 @@ public class Discord extends FreedomService
                     .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .enableIntents(GatewayIntent.GUILD_MEMBERS)
                     .build();
-            FLog.info("Discord verification bot has successfully enabled!");
+            FLog.info("Discord integration bot has successfully enabled!");
         }
         catch (LoginException e)
         {
-            FLog.warning("An invalid token for the discord verification bot, the bot will not enable.");
+            FLog.warning("An invalid token for the Discord integration bot was provided, the bot will not enable.");
+            enabled = false;
         }
         catch (IllegalArgumentException e)
         {
-            FLog.warning("Discord verification bot failed to start.");
+            FLog.warning("Discord integration bot failed to start.");
+            enabled = false;
         }
         catch (NoClassDefFoundError e)
         {
-            FLog.warning("The JDA plugin is not installed, therefore the discord bot cannot start.");
+            FLog.warning("The JDA plugin is not installed, therefore the Discord bot cannot start.");
             FLog.warning("To resolve this error, please download the latest JDA from: https://github.com/TFPatches/Minecraft-JDA/releases");
+            enabled = false;
         }
-
     }
 
     public String poolIdentifier()
@@ -261,35 +256,6 @@ public class Discord extends FreedomService
         return member.getUser();
     }
 
-    public boolean sendBackupCodes(PlayerData playerData)
-    {
-        List<String> codes = generateBackupCodes();
-        List<String> encryptedCodes = generateEncryptedBackupCodes(codes);
-        User user = getUser(playerData.getDiscordID());
-        File file = generateBackupCodesFile(playerData.getName(), codes);
-        if (file == null)
-        {
-            return false;
-        }
-        PrivateChannel privateChannel = user.openPrivateChannel().complete();
-        privateChannel.sendMessage("Do not share these codes with anyone as they can be used to impose as you.").addFile(file).complete();
-        playerData.setBackupCodes(encryptedCodes);
-        plugin.pl.save(playerData);
-        //noinspection ResultOfMethodCallIgnored
-        file.delete();
-        return true;
-    }
-
-    public List<String> generateBackupCodes()
-    {
-        List<String> codes = new ArrayList<>();
-        for (int i = 0; i < 10; i++)
-        {
-            codes.add(FUtil.randomAlphanumericString(10));
-        }
-        return codes;
-    }
-
     public String generateCode(int size)
     {
         StringBuilder code = new StringBuilder();
@@ -299,58 +265,6 @@ public class Discord extends FreedomService
             code.append(random.nextInt(10));
         }
         return code.toString();
-    }
-
-    public List<String> generateEncryptedBackupCodes(List<String> codes)
-    {
-        List<String> encryptedCodes = new ArrayList<>();
-        for (String code : codes)
-        {
-            encryptedCodes.add(getMD5(code));
-        }
-        return encryptedCodes;
-    }
-
-    public File generateBackupCodesFile(String name, List<String> codes)
-    {
-        StringBuilder text = new StringBuilder();
-        text.append("Below are your backup codes for use on TotalFreedom in the event you lose access to your discord account.\n")
-                .append("Simply pick a code, and run /verify <code> on the server. Each code is one use, so be sure to cross it off once you use it.\n")
-                .append("To generate new codes, simply run /generatebackupcodes\n\n");
-
-        for (String code : codes)
-        {
-            text.append(code).append("\n");
-        }
-
-        String fileUrl = plugin.getDataFolder().getAbsolutePath() + "/TF-Backup-Codes-" + name + ".txt";
-        try
-        {
-            FileWriter fileWriter = new FileWriter(fileUrl);
-            fileWriter.write(text.toString());
-            fileWriter.close();
-        }
-        catch (IOException e)
-        {
-            FLog.severe("Failed to generate backup codes file: " + e.toString());
-            return null;
-        }
-        return new File(fileUrl);
-    }
-
-    public void addVerificationCode(String code, PlayerData playerData)
-    {
-        VERIFICATION_CODES.put(code, playerData);
-    }
-
-    public void removeVerificationCode(String code)
-    {
-        VERIFICATION_CODES.remove(code);
-    }
-
-    public HashMap<String, PlayerData> getVerificationCodes()
-    {
-        return VERIFICATION_CODES;
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -475,7 +389,7 @@ public class Discord extends FreedomService
             messageChatChannel("**Server has stopped**");
         }
 
-        FLog.info("Discord verification bot has successfully shutdown.");
+        FLog.info("Discord integration bot has successfully shutdown.");
     }
 
     public String deformat(String input)

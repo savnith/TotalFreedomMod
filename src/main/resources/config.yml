@@ -56,8 +56,6 @@ server:
 
 # Discord
 discord:
-  # Do you want to enable the Discord verification system? (Disabled by default)
-  verification: false
   # If you do not have a token, make a bot account and get one at https://discordapp.com/developers/applications/me
   token: ''
   # The official discord server's ID for this server
@@ -86,6 +84,20 @@ discord:
   server_owner_role_id: ''
   # Invite link for your Discord server
   invite_link: 'https://discord.com/invite/PW4savJR9a'
+
+# Player data
+playerdata:
+  # When trying to query player data for a username, the plugin will try everything it can to get an actual UUID from it
+  # using Essentials (if present) or even the server itself to avoid querying Mojang's servers. If all else has failed,
+  # when this setting is set to true, the server will query Mojang's servers and try to get a UUID from them. When this
+  # fails, the server randomly generates a UUID on its own. This fallback lags servers when attempts to query player
+  # data for nonexistent accounts are made, which is why it's disabled by default to prevent exploitation.
+  # --
+  # When this setting is set to false, the plugin will essentially skip trying to query Mojang's servers and jump to
+  # randomly generating a new UUID. This improves efficiency, but if your server player data isn't consistent with
+  # TotalFreedomMod's, you won't be able to query entries in the database for users who have never joined your server
+  # before.
+  query_mojang_for_uuidless_players: false
 
 # Pterodactyl
 ptero:
