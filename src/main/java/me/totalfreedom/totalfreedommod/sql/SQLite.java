@@ -300,7 +300,7 @@ public class SQLite extends FreedomService
         }
         catch (SQLException e)
         {
-            FLog.severe("Failed to get player by name:");
+            FLog.severe("Failed to get player by uuid:");
             FLog.severe(e);
         }
 
