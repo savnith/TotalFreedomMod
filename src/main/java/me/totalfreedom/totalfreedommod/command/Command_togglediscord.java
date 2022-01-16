@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@CommandRequires({"JDA"})
 @CommandPermissions(level = Rank.OP, source = SourceType.ONLY_IN_GAME)
 @CommandParameters(description = "Toggle the display of Discord messages in-game.", usage = "/<command>", aliases = "tdiscord,tdisc")
 public class Command_togglediscord extends FreedomCommand

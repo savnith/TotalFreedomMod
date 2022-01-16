@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@CommandRequires({"LibsDisguises"})
 @CommandPermissions(level = Rank.ADMIN, source = SourceType.BOTH)
 @CommandParameters(description = "Undisguise all online players on the server", usage = "/<command> [-a]", aliases = "uall")
 public class Command_undisguiseall extends FreedomCommand

@@ -5,6 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@CommandRequires({"JDA"})
 @CommandPermissions(level = Rank.ADMIN, source = SourceType.ONLY_CONSOLE)
 @CommandParameters(description = "Clear the discord message queue.", usage = "/<command>")
 public class Command_cleardiscordqueue extends FreedomCommand

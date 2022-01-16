@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@CommandRequires({"JDA"})
 @CommandPermissions(level = Rank.OP, source = SourceType.ONLY_IN_GAME)
 @CommandParameters(description = "Unlink your Discord account from your Minecraft account", usage = "/<command> [player]")
 public class Command_unlinkdiscord extends FreedomCommand

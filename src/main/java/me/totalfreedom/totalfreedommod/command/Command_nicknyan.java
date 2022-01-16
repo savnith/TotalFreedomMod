@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@CommandRequires({"Essentials"})
 @CommandPermissions(level = Rank.OP, source = SourceType.ONLY_IN_GAME)
 @CommandParameters(description = "Essentials Interface Command - Randomize the colors of your nickname.", usage = "/<command> <<nick> | off>")
 public class Command_nicknyan extends FreedomCommand

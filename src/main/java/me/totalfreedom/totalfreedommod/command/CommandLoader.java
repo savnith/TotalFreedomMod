@@ -63,8 +63,24 @@ public class CommandLoader extends FreedomService
 
         Set<Class<? extends FreedomCommand>> commandClasses = commandDir.getSubTypesOf(FreedomCommand.class);
 
+        registerer:
         for (Class<? extends FreedomCommand> commandClass : commandClasses)
         {
+            // This prevents commands dependent on external plugins from being registered.
+            if (commandClass.isAnnotationPresent(CommandRequires.class))
+            {
+                String[] requiredPlugins = commandClass.getAnnotation(CommandRequires.class).value();
+                for (String pl : requiredPlugins)
+                {
+                    // If a plugin required by the command isn't present, the command is ignored
+                    if (!server.getPluginManager().isPluginEnabled(pl))
+                    {
+                        FLog.warning("Ignoring command with unmet dependencies (" + pl + "):" + " /" + commandClass.getSimpleName().replace("Command_", ""));
+                        continue registerer;
+                    }
+                }
+            }
+
             try
             {
                 add(commandClass.newInstance());

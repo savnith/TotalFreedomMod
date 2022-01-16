@@ -11,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@CommandRequires({"JDA"})
 @CommandPermissions(level = Rank.ADMIN, source = SourceType.BOTH)
 @CommandParameters(description = "Verify an admin without giving them admin permissions.", usage = "/<command> <player>", aliases = "vns,verifynostaff,vna")
 public class Command_verifynoadmin extends FreedomCommand

@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@CommandRequires({"PlotSquared"})
 @CommandPermissions(level = Rank.NON_OP, source = SourceType.ONLY_IN_GAME)
 @CommandParameters(description = "Go to the PlotWorld.", usage = "/<command>", aliases = "pw")
 public class Command_plotworld extends FreedomCommand

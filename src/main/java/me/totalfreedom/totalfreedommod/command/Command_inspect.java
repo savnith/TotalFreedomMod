@@ -10,6 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@CommandRequires({"CoreProtect"})
 @CommandPermissions(level = Rank.OP, source = SourceType.ONLY_IN_GAME)
 @CommandParameters(description = "Block inspector tool for operators", usage = "/<command> [history] <page>", aliases = "ins")
 public class Command_inspect extends FreedomCommand

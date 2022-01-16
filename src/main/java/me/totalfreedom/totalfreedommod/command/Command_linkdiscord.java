@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@CommandRequires({"JDA"})
 @CommandPermissions(level = Rank.OP, source = SourceType.ONLY_IN_GAME)
 @CommandParameters(description = "Link your Discord account to your Minecraft account", usage = "/<command> [<name> <id>]")
 public class Command_linkdiscord extends FreedomCommand

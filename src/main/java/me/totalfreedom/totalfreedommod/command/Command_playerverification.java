@@ -13,6 +13,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@CommandRequires({"JDA"})
 @CommandPermissions(level = Rank.OP, source = SourceType.ONLY_IN_GAME)
 @CommandParameters(description = "Manage your verification", usage = "/<command> <enable | disable | clearips | clearip <ip> | status | genbackupcodes>", aliases = "playerverify,pv")
 public class Command_playerverification extends FreedomCommand
