@@ -2,7 +2,7 @@ package me.totalfreedom.totalfreedommod.command;
 
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.discord.Discord;
-import me.totalfreedom.totalfreedommod.player.FPlayer;
+import me.totalfreedom.totalfreedommod.freeze.FreezeData;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FUtil;
@@ -86,12 +86,12 @@ public class Command_verify extends FreedomCommand
                 plugin.dc.removeVerificationCode(code);
             }
 
-            final FPlayer fPlayer = plugin.pl.getPlayer(playerSender);
-            if (fPlayer.getFreezeData().isFrozen())
+            final FreezeData fd = plugin.pl.getPlayer(playerSender).getFreezeData();
+            if (fd.isFrozen())
             {
-                fPlayer.getFreezeData().setFrozen(false);
-                msg("You have been unfrozen.");
+                fd.setFrozen(false);
             }
+
             FUtil.bcastMsg(playerSender.getName() + " has verified!", ChatColor.GOLD);
             playerSender.setOp(true);
             plugin.pl.verify(playerSender, backupCode);

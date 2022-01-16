@@ -8,7 +8,7 @@ import java.util.List;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.discord.Discord;
-import me.totalfreedom.totalfreedommod.player.FPlayer;
+import me.totalfreedom.totalfreedommod.freeze.FreezeData;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FUtil;
 import org.apache.commons.lang.StringUtils;
@@ -233,11 +233,10 @@ public class Command_saconfig extends FreedomCommand
                 }
                 plugin.ptero.updateAccountStatus(admin);
 
-                final FPlayer fPlayer = plugin.pl.getPlayer(player);
-                if (fPlayer.getFreezeData().isFrozen())
+                final FreezeData fd = plugin.pl.getPlayer(player).getFreezeData();
+                if (fd.isFrozen())
                 {
-                    fPlayer.getFreezeData().setFrozen(false);
-                    msg(player, "You have been unfrozen.");
+                    fd.setFrozen(false);
                 }
 
                 if (!player.isOp())

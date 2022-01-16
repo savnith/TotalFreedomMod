@@ -3,7 +3,7 @@ package me.totalfreedom.totalfreedommod.command;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import me.totalfreedom.totalfreedommod.player.FPlayer;
+import me.totalfreedom.totalfreedommod.freeze.FreezeData;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FUtil;
 import org.bukkit.ChatColor;
@@ -56,11 +56,10 @@ public class Command_verifynoadmin extends FreedomCommand
             FUtil.adminAction(sender.getName(), "Verified " + player.getName() + ", without admin permissions.", true);
             player.setOp(true);
             msg(player, YOU_ARE_OP);
-            final FPlayer fPlayer = plugin.pl.getPlayer(player);
-            if (fPlayer.getFreezeData().isFrozen())
+            final FreezeData fd = plugin.pl.getPlayer(player).getFreezeData();
+            if (fd.isFrozen())
             {
-                fPlayer.getFreezeData().setFrozen(false);
-                msg(player, "You have been unfrozen.");
+                fd.setFrozen(false);
             }
             msg("Verified " + player.getName() + " but didn't give them admin permissions", ChatColor.GREEN);
         }

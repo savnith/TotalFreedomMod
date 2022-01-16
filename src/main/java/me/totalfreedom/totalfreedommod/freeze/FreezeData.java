@@ -1,9 +1,13 @@
 package me.totalfreedom.totalfreedommod.freeze;
 
 import java.util.Objects;
+import me.totalfreedom.totalfreedommod.event.freeze.FreezeEvent;
+import me.totalfreedom.totalfreedommod.event.freeze.PlayerFreezeEvent;
+import me.totalfreedom.totalfreedommod.event.freeze.PlayerUnfreezeEvent;
 import me.totalfreedom.totalfreedommod.player.FPlayer;
 import me.totalfreedom.totalfreedommod.util.FLog;
 import me.totalfreedom.totalfreedommod.util.FUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -36,6 +40,14 @@ public class FreezeData
         if (player == null)
         {
             FLog.info("Could not freeze that player as they are not online!");
+            return;
+        }
+
+        FreezeEvent event = freeze ? new PlayerFreezeEvent(fPlayer, location) : new PlayerUnfreezeEvent(fPlayer);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled())
+        {
             return;
         }
 

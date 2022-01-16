@@ -1,5 +1,6 @@
 package me.totalfreedom.totalfreedommod.command;
 
+import me.totalfreedom.totalfreedommod.freeze.FreezeData;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FUtil;
 import org.bukkit.command.Command;
@@ -35,10 +36,10 @@ public class Command_manuallyverify extends FreedomCommand
         player.setOp(true);
         msg(player, YOU_ARE_OP);
 
-        if (plugin.pl.getPlayer(player).getFreezeData().isFrozen())
+        final FreezeData fd = plugin.pl.getPlayer(player).getFreezeData();
+        if (fd.isFrozen())
         {
-            plugin.pl.getPlayer(player).getFreezeData().setFrozen(false);
-            msg(player, "You have been unfrozen.");
+            fd.setFrozen(false);
         }
 
         plugin.pl.verify(player, null);

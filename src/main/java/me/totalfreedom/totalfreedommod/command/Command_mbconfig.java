@@ -3,6 +3,7 @@ package me.totalfreedom.totalfreedommod.command;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import me.totalfreedom.totalfreedommod.freeze.FreezeData;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FUtil;
@@ -119,10 +120,11 @@ public class Command_mbconfig extends FreedomCommand
                 if (data.isMasterBuilder() && plugin.pl.isPlayerImpostor(player))
                 {
                     FUtil.adminAction(sender.getName(), "Re-adding " + data.getName() + " to the Master Builder list", true);
+                    final FreezeData fd = plugin.pl.getPlayer(player).getFreezeData();
 
-                    if (plugin.pl.getPlayer(player).getFreezeData().isFrozen())
+                    if (fd.isFrozen())
                     {
-                        plugin.pl.getPlayer(player).getFreezeData().setFrozen(false);
+                        fd.setFrozen(false);
                     }
                     if (player != null)
                     {

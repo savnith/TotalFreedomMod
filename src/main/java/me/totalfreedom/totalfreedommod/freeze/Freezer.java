@@ -1,7 +1,10 @@
 package me.totalfreedom.totalfreedommod.freeze;
 
 import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.event.freeze.PlayerFreezeEvent;
+import me.totalfreedom.totalfreedommod.event.freeze.PlayerUnfreezeEvent;
 import me.totalfreedom.totalfreedommod.util.FUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,7 +13,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class Freezer extends FreedomService
 {
-
     private boolean globalFreeze = false;
 
     @Override
@@ -55,6 +57,22 @@ public class Freezer extends FreedomService
         Location loc = player.getLocation();
 
         event.setTo(loc);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerFrozen(PlayerFreezeEvent event)
+    {
+        FUtil.playerMsg(event.getPlayer(), "You have been frozen.", ChatColor.AQUA);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerUnfrozen(PlayerUnfreezeEvent event)
+    {
+        Player player = event.getPlayer();
+        if (player != null)
+        {
+            FUtil.playerMsg(player, "You have been unfrozen.", ChatColor.AQUA);
+        }
     }
 
     public boolean isGlobalFreeze()
