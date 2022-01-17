@@ -1,21 +1,47 @@
 package me.totalfreedom.totalfreedommod.util;
 
-import lombok.Getter;
-
 public class VersionMeta
 {
-    @Getter
     private String id;
-    @Getter
     private String name;
-    @Getter
     private String release_target;
-    @Getter
     private int world_version;
-    @Getter
     private int pack_version;
-    @Getter
     private String build_time;
-    @Getter
     private boolean stable;
+
+    public String getId()
+    {
+        return id;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public String getReleaseTarget()
+    {
+        return release_target;
+    }
+
+    public int getWorldVersion()
+    {
+        return world_version;
+    }
+
+    public int getPackVersion()
+    {
+        return pack_version;
+    }
+
+    public String getBuildTime()
+    {
+        return build_time;
+    }
+
+    public boolean isStable()
+    {
+        return stable;
+    }
 }
