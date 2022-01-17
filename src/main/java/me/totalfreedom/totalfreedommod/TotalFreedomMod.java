@@ -74,7 +74,6 @@ public class TotalFreedomMod extends JavaPlugin
     // Command Loader
     public CommandLoader cl;
     // Services
-    public ServerInterface si;
     public WorldManager wm;
     public LogViewer lv;
     public AdminList al;
@@ -175,9 +174,6 @@ public class TotalFreedomMod extends JavaPlugin
         final MethodTimer timer = new MethodTimer();
         timer.start();
 
-        // Warn if we're running on a wrong version
-        ServerInterface.warnVersion();
-
         // Delete unused files
         FUtil.deleteCoreDumps();
         FUtil.deleteFolder(new File("./_deleteme"));
@@ -210,7 +206,7 @@ public class TotalFreedomMod extends JavaPlugin
         FLog.info("Started " + fsh.getServiceAmount() + " services.");
 
         timer.update();
-        FLog.info("Version " + pluginVersion + " for " + ServerInterface.COMPILE_NMS_VERSION + " enabled in " + timer.getTotal() + "ms");
+        FLog.info("Version " + pluginVersion + " enabled in " + timer.getTotal() + "ms");
 
         // Metrics @ https://bstats.org/plugin/bukkit/TotalFreedomMod/2966
         new Metrics(this, 2966);
@@ -295,7 +291,6 @@ public class TotalFreedomMod extends JavaPlugin
         private void initServices()
         {
             // Start services
-            si = new ServerInterface();
             wm = new WorldManager();
             lv = new LogViewer();
             sql = new SQLite();

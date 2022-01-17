@@ -1,5 +1,6 @@
 package me.totalfreedom.totalfreedommod.util;
 
+import com.google.gson.Gson;
 import me.totalfreedom.totalfreedommod.TotalFreedomMod;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import org.apache.commons.io.FileUtils;
@@ -31,6 +32,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -74,6 +76,7 @@ public class FUtil
             ChatColor.LIGHT_PURPLE);
     private static final SplittableRandom RANDOM = new SplittableRandom();
     private static final String CHARACTER_STRING = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    public static VersionMeta SERVER_VERSION = null;
     private static final Map<Integer, String> TIMEZONE_LOOKUP = new HashMap<>();
     public static String DATE_STORAGE_FORMAT = "EEE, d MMM yyyy HH:mm:ss Z";
 
@@ -101,6 +104,12 @@ public class FUtil
             }
             TIMEZONE_LOOKUP.put(i, "GMT" + sec + ":00");
         }
+
+        Gson gson = new Gson();
+        InputStream file = Bukkit.class.getClassLoader().getResourceAsStream("version.json");
+        InputStreamReader reader = new InputStreamReader(file);
+
+        SERVER_VERSION = gson.fromJson(reader, VersionMeta.class);
     }
 
     public static void cancel(BukkitTask task)
@@ -619,12 +628,6 @@ public class FUtil
         }
 
         return date.getTime();
-    }
-
-    public static String getNMSVersion()
-    {
-        String packageName = getServer().getClass().getPackage().getName();
-        return packageName.substring(packageName.lastIndexOf('.') + 1);
     }
 
     public static int randomInteger(int min, int max)
