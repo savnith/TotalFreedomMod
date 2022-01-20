@@ -97,6 +97,9 @@ public enum ConfigEntry
     PTERO_ADMIN_KEY(String.class, "ptero.admin_key"),
     PTERO_SERVER_KEY(String.class, "ptero.server_key"),
     //
+    CL_FORCE_DEPENDENCYLESS_COMMANDS(Boolean.class, "commands.force_dependencyless_commands"),
+    CL_IGNORE(List.class, "commands.ignore"),
+    //
     SHOP_ENABLED(Boolean.class, "shop.enabled"),
     SHOP_TITLE(String.class, "shop.title"),
     SHOP_PREFIX(String.class, "shop.prefix"),

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import me.totalfreedom.totalfreedommod.FreedomService;
+import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import me.totalfreedom.totalfreedommod.util.FLog;
 import org.reflections.Reflections;
 
@@ -66,17 +67,29 @@ public class CommandLoader extends FreedomService
         registerer:
         for (Class<? extends FreedomCommand> commandClass : commandClasses)
         {
-            // This prevents commands dependent on external plugins from being registered.
-            if (commandClass.isAnnotationPresent(CommandRequires.class))
+            String cmdName = commandClass.getSimpleName().replace("Command_", "");
+
+            // Don't load commands if they are marked as ignored in the config unless they are /tfm.
+            if (!cmdName.equalsIgnoreCase("totalfreedommod")
+                    && ConfigEntry.CL_IGNORE.getStringList().contains(cmdName))
             {
-                String[] requiredPlugins = commandClass.getAnnotation(CommandRequires.class).value();
-                for (String pl : requiredPlugins)
+                continue;
+            }
+
+            // This prevents commands dependent on external plugins from being registered.
+            if (!ConfigEntry.CL_FORCE_DEPENDENCYLESS_COMMANDS.getBoolean())
+            {
+                if (commandClass.isAnnotationPresent(CommandRequires.class))
                 {
-                    // If a plugin required by the command isn't present, the command is ignored
-                    if (!server.getPluginManager().isPluginEnabled(pl))
+                    String[] requiredPlugins = commandClass.getAnnotation(CommandRequires.class).value();
+                    for (String pl : requiredPlugins)
                     {
-                        FLog.warning("Ignoring command with unmet dependencies (" + pl + "):" + " /" + commandClass.getSimpleName().replace("Command_", ""));
-                        continue registerer;
+                        // If a plugin required by the command isn't present, the command is ignored
+                        if (!server.getPluginManager().isPluginEnabled(pl))
+                        {
+                            FLog.warning("Ignoring command with unmet dependencies (" + pl + "):" + " /" + cmdName);
+                            continue registerer;
+                        }
                     }
                 }
             }
@@ -87,7 +100,7 @@ public class CommandLoader extends FreedomService
             }
             catch (InstantiationException | IllegalAccessException | ExceptionInInitializerError ex)
             {
-                FLog.warning("Failed to register command: /" + commandClass.getSimpleName().replace("Command_", ""));
+                FLog.warning("Failed to register command: /" + cmdName);
             }
         }
 

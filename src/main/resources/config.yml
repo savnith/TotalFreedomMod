@@ -112,6 +112,17 @@ ptero:
   # Server API key
   server_key: ''
 
+# Command loader
+commands:
+  # Force commands to load even when they don't meet a required dependency
+  force_dependencyless_commands: false
+
+  # Don't load these commands (root-level command required).
+  # NOTE: /totalfreedommod cannot be disabled.
+  ignore:
+  #  - togglediscord
+  #  - ptero
+
 # The shop
 shop:
   # Enable the shop
