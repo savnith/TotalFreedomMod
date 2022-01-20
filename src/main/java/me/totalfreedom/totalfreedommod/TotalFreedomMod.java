@@ -54,7 +54,6 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.spigotmc.SpigotConfig;
 
 public class TotalFreedomMod extends JavaPlugin
 {
@@ -210,9 +209,6 @@ public class TotalFreedomMod extends JavaPlugin
 
         // Metrics @ https://bstats.org/plugin/bukkit/TotalFreedomMod/2966
         new Metrics(this, 2966);
-
-        // little workaround to stop spigot from autorestarting - causing AMP to detach from process.
-        SpigotConfig.config.set("settings.restart-on-crash", false);
     }
 
     @Override

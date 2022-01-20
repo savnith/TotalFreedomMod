@@ -2,10 +2,10 @@ package me.totalfreedom.totalfreedommod.blocking.command;
 
 import me.totalfreedom.totalfreedommod.TotalFreedomMod;
 import me.totalfreedom.totalfreedommod.util.FUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.spigotmc.SpigotConfig;
 
 public class CommandBlockerEntry
 {
@@ -45,7 +45,7 @@ public class CommandBlockerEntry
         }
         if (action == CommandBlockerAction.BLOCK_UNKNOWN)
         {
-            sender.sendMessage(SpigotConfig.unknownCommandMessage);
+            sender.sendMessage(Bukkit.spigot().getConfig().getString("messages.unknown-command", "Unknown command. Type \"help\" for help."));
             return;
         }
         FUtil.playerMsg(sender, FUtil.colorize(message));

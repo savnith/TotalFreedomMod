@@ -2,16 +2,15 @@ package me.totalfreedom.totalfreedommod.command;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SplittableRandom;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FUtil;
-import net.minecraft.server.v1_16_R3.NBTTagCompound;
-import net.minecraft.server.v1_16_R3.NBTTagList;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -151,18 +150,18 @@ public class Command_modifyitem extends FreedomCommand
                 {
                     return false;
                 }
-                net.minecraft.server.v1_16_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
-                NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
-                NBTTagList modifiers = getAttributeList(nmsStack);
-                NBTTagCompound cmpnd = new NBTTagCompound();
-                Attribute attribute = Attribute.getByName(args[1].toUpperCase());
-                if (attribute == null)
+
+                Attribute attr;
+                try
+                {
+                    attr = Attribute.valueOf(args[1].toUpperCase());
+                }
+                catch (Exception ex)
                 {
                     msg("Invalid attribute. Please run /attributelist for a list of valid attributes.");
                     return true;
                 }
-                cmpnd.setString("AttributeName", attribute.getAttribute());
-                cmpnd.setString("Name", attribute.getAttribute());
+
                 double amount;
                 try
                 {
@@ -170,7 +169,7 @@ public class Command_modifyitem extends FreedomCommand
                 }
                 catch (NumberFormatException ex)
                 {
-                    msg("The amount specified is not a valid integer.");
+                    msg("Invalid number: " + args[2], ChatColor.RED);
                     return true;
                 }
                 if (Double.isNaN(amount))
@@ -178,89 +177,19 @@ public class Command_modifyitem extends FreedomCommand
                     msg("The amount specified is illegal.");
                     return true;
                 }
-                cmpnd.setDouble("Amount", amount);
-                cmpnd.setInt("Operation", 0);
-                SplittableRandom random = new SplittableRandom();
-                cmpnd.setIntArray("UUID", new int[]
-                        {
-                                random.nextInt(),
-                                random.nextInt(),
-                                random.nextInt(),
-                                random.nextInt()
-                        });
-                cmpnd.setString("Slot", "mainhand");
-                modifiers.add(cmpnd);
-                assert compound != null;
-                compound.set("AttributeModifiers", modifiers);
-                nmsStack.setTag(compound);
-                item = CraftItemStack.asBukkitCopy(nmsStack);
+
+                // Builds a modifier from the data provided
+                AttributeModifier modifier = new AttributeModifier(attr.getKey().getKey(), amount, AttributeModifier.Operation.ADD_NUMBER);
+
+                // Adds the attribute
+                meta.addAttributeModifier(attr, modifier);
+
+                item.setItemMeta(meta);
                 break;
             default:
                 return false;
         }
         playerSender.getInventory().setItemInMainHand(item);
         return true;
-    }
-
-    private NBTTagList getAttributeList(net.minecraft.server.v1_16_R3.ItemStack stack)
-    {
-        if (stack.getTag() == null)
-        {
-            stack.setTag(new NBTTagCompound());
-        }
-        NBTTagList attr = stack.getTag().getList("AttributeModifiers", 10);
-        if (attr == null)
-        {
-            stack.getTag().set("AttributeModifiers", new NBTTagList());
-        }
-        return stack.getTag().getList("AttributeModifiers", 10);
-    }
-
-    private enum Attribute
-    {
-        GENERIC_MAX_HEALTH("GENERIC_MAX_HEALTH", "generic.max_health"),
-        GENERIC_FOLLOW_RANGE("GENERIC_FOLLOW_RANGE", "generic.follow_range"),
-        GENERIC_KNOCKBACK_RESISTANCE("GENERIC_KNOCKBACK_RESISTANCE", "generic.knockback_resistance"),
-        GENERIC_MOVEMENT_SPEED("GENERIC_MOVEMENT_SPEED", "generic.movement_speed"),
-        GENERIC_FLYING_SPEED("GENERIC_FLYING_SPEED", "generic.flying_speed"),
-        GENERIC_ATTACK_DAMAGE("GENERIC_ATTACK_DAMAGE", "generic.attack_damage"),
-        GENERIC_ATTACK_SPEED("GENERIC_ATTACK_SPEED", "generic.attack_speed"),
-        GENERIC_ARMOR("GENERIC_ARMOR", "generic.armor"),
-        GENERIC_ARMOR_TOUGHNESS("GENERIC_ARMOR_TOUGHNESS", "generic.armor_toughmess"),
-        GENERIC_LUCK("GENERIC_LUCK", "generic.luck"),
-        HORSE_JUMP_STRENGTH("GENERIC_MAX_HEALTH", "horse.jump_strength"),
-        ZOMBIE_SPAWN_REINFORCEMENTS("ZOMBIE_SPAWN_REINFORCEMENTS", "zombie.spawn_reinforcements");
-
-        private final String name;
-        private final String attribute;
-
-        Attribute(String name, String attribute)
-        {
-            this.name = name;
-            this.attribute = attribute;
-        }
-
-        public static Attribute getByName(String name)
-        {
-            for (Attribute attr : Attribute.values())
-            {
-                if (attr.toString().toUpperCase().equals(name))
-                {
-                    return attr;
-                }
-            }
-            return null;
-        }
-
-        public String getAttribute()
-        {
-            return attribute;
-        }
-
-        @Override
-        public String toString()
-        {
-            return name;
-        }
     }
 }

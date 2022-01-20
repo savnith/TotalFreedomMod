@@ -120,8 +120,8 @@ commands:
   # Don't load these commands (root-level command required).
   # NOTE: /totalfreedommod cannot be disabled.
   ignore:
-  #  - togglediscord
-  #  - ptero
+    - example1
+    - example2
 
 # The shop
 shop:
