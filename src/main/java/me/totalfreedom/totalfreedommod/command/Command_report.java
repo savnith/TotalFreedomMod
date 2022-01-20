@@ -1,5 +1,6 @@
 package me.totalfreedom.totalfreedommod.command;
 
+import me.totalfreedom.totalfreedommod.event.PlayerReportEvent;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -45,18 +46,10 @@ public class Command_report extends FreedomCommand
         }
 
         String report = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
-        plugin.cm.reportAction(playerSender, player, report);
 
-        boolean logged = false;
-
-        if (plugin.dc.enabled)
-        {
-            logged = plugin.dc.sendReport(playerSender, player, report);
-        }
-
-        msg(ChatColor.GREEN + "Thank you, your report has been successfully logged."
-                + (logged ? ChatColor.RED + "\nNote: This report has been logged to a discord channel, as with any report system, spamming reports can lead to you getting banned." : ""));
-
+        PlayerReportEvent event = new PlayerReportEvent(playerSender, player, report);
+        server.getPluginManager().callEvent(event);
+        
         return true;
     }
 }

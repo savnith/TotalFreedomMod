@@ -3,6 +3,7 @@ package me.totalfreedom.totalfreedommod;
 import com.google.common.base.Strings;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
+import me.totalfreedom.totalfreedommod.event.PlayerReportEvent;
 import me.totalfreedom.totalfreedommod.player.FPlayer;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
 import me.totalfreedom.totalfreedommod.rank.Displayable;
@@ -175,15 +176,21 @@ public class ChatManager extends FreedomService
         });
     }
 
-    public void reportAction(Player reporter, Player reported, String report)
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerReport(PlayerReportEvent event)
     {
-        for (Player player : server.getOnlinePlayers())
+        Player sender = event.getSender();
+        Player target = event.getTarget();
+        String reason = event.getReason();
+
+        server.getOnlinePlayers().stream().filter((player -> plugin.al.isAdmin(player))).forEach((player) ->
         {
-            if (plugin.al.isAdmin(player))
-            {
-                playerMsg(player, ChatColor.RED + "[REPORTS] " + ChatColor.GOLD + reporter.getName() + " has reported " + reported.getName() + " for " + report);
-            }
-        }
-        FLog.info("[REPORTS] " + reporter.getName() + " has reported " + reported.getName() + " for " + report);
+            playerMsg(player, ChatColor.RED + "[REPORTS] " + ChatColor.GOLD + sender.getName() + " has reported " + target.getName() + " for " + reason);
+        });
+
+        // TODO: Consider moving this into a separate FreedomService related to logging
+        FLog.info("[REPORTS] " + sender.getName() + " has reported " + target.getName() + " for " + reason);
+
+        playerMsg(sender, ChatColor.GREEN + "Thank you, your report has been successfully logged.");
     }
 }

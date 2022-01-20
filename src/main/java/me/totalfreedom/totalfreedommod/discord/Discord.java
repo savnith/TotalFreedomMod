@@ -19,6 +19,7 @@ import javax.security.auth.login.LoginException;
 import me.totalfreedom.totalfreedommod.FreedomService;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
+import me.totalfreedom.totalfreedommod.event.PlayerReportEvent;
 import me.totalfreedom.totalfreedommod.player.PlayerData;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FLog;
@@ -41,6 +42,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.internal.utils.concurrent.CountingThreadFactory;
+import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
@@ -397,52 +399,6 @@ public class Discord extends FreedomService
         return input.replace("_", "\\_");
     }
 
-    public boolean sendReport(Player reporter, Player reported, String reason)
-    {
-        if (ConfigEntry.DISCORD_REPORT_CHANNEL_ID.getString().isEmpty())
-        {
-            return false;
-        }
-
-        if (ConfigEntry.DISCORD_SERVER_ID.getString().isEmpty())
-        {
-            FLog.severe("No Discord server ID was specified in the config, but there is a report channel ID.");
-            return false;
-        }
-
-        Guild server = bot.getGuildById(ConfigEntry.DISCORD_SERVER_ID.getString());
-        if (server == null)
-        {
-            FLog.severe("The Discord server ID specified is invalid, or the bot is not on the server.");
-            return false;
-        }
-
-        TextChannel channel = server.getTextChannelById(ConfigEntry.DISCORD_REPORT_CHANNEL_ID.getString());
-        if (channel == null)
-        {
-            FLog.severe("The report channel ID specified in the config is invalid.");
-            return false;
-        }
-
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle("Report for " + reported.getName());
-        embedBuilder.setDescription(reason);
-        embedBuilder.setFooter("Reported by " + reporter.getName(), "https://minotar.net/helm/" + reporter.getName() + ".png");
-        embedBuilder.setTimestamp(Instant.from(ZonedDateTime.now()));
-        String location = "World: " + Objects.requireNonNull(reported.getLocation().getWorld()).getName() + ", X: " + reported.getLocation().getBlockX() + ", Y: " + reported.getLocation().getBlockY() + ", Z: " + reported.getLocation().getBlockZ();
-        embedBuilder.addField("Location", location, true);
-        embedBuilder.addField("Game Mode", WordUtils.capitalizeFully(reported.getGameMode().name()), true);
-        com.earth2me.essentials.User user = plugin.esb.getEssentialsUser(reported.getName());
-        embedBuilder.addField("God Mode", WordUtils.capitalizeFully(String.valueOf(user.isGodModeEnabled())), true);
-        if (user.getNickname() != null)
-        {
-            embedBuilder.addField("Nickname", user.getNickname(), true);
-        }
-        MessageEmbed embed = embedBuilder.build();
-        channel.sendMessage(embed).complete();
-        return true;
-    }
-
     // Do no ask why this is here. I spent two hours trying to make a simple thing work
     public class StartEvent
     {
@@ -450,5 +406,64 @@ public class Discord extends FreedomService
         {
             messageChatChannel("**Server has started**");
         }
+    }
+
+    @EventHandler
+    public void onPlayerReport(PlayerReportEvent event)
+    {
+        Player sender = event.getSender();
+        Player target = event.getTarget();
+        String reason = event.getReason();
+
+        if (!enabled || ConfigEntry.DISCORD_REPORT_CHANNEL_ID.getString().isEmpty())
+        {
+            return;
+        }
+
+        if (ConfigEntry.DISCORD_SERVER_ID.getString().isEmpty())
+        {
+            FLog.severe("No Discord server ID was specified in the config, but there is a report channel ID.");
+            return;
+        }
+
+        Guild server = bot.getGuildById(ConfigEntry.DISCORD_SERVER_ID.getString());
+        if (server == null)
+        {
+            FLog.severe("The Discord server ID specified is invalid, or the bot is not on the server.");
+            return;
+        }
+
+        TextChannel channel = server.getTextChannelById(ConfigEntry.DISCORD_REPORT_CHANNEL_ID.getString());
+        if (channel == null)
+        {
+            FLog.severe("The report channel ID specified in the config is invalid.");
+            return;
+        }
+
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+
+        embedBuilder.setTitle("Report for " + target.getName());
+        embedBuilder.setDescription(reason);
+        embedBuilder.setFooter("Reported by " + sender.getName(), "https://minotar.net/helm/" + sender.getName() + ".png");
+        embedBuilder.setTimestamp(Instant.from(ZonedDateTime.now()));
+
+        String location = "World: " + Objects.requireNonNull(target.getLocation().getWorld()).getName() + ", X: " + target.getLocation().getBlockX() + ", Y: " + target.getLocation().getBlockY() + ", Z: " + target.getLocation().getBlockZ();
+        embedBuilder.addField("Location", location, true);
+        embedBuilder.addField("Game Mode", WordUtils.capitalizeFully(target.getGameMode().name()), true);
+
+        if (plugin.esb.isEnabled())
+        {
+            com.earth2me.essentials.User user = plugin.esb.getEssentialsUser(target.getName());
+            embedBuilder.addField("God Mode", WordUtils.capitalizeFully(String.valueOf(user.isGodModeEnabled())), true);
+            if (user.getNickname() != null)
+            {
+                embedBuilder.addField("Nickname", user.getNickname(), true);
+            }
+        }
+
+        MessageEmbed embed = embedBuilder.build();
+        channel.sendMessage(embed).complete();
+
+        FUtil.playerMsg(sender, ChatColor.RED + "Note: This report has been logged to a Discord channel. As with any report system, spamming reports can lead to you getting banned.");
     }
 }
