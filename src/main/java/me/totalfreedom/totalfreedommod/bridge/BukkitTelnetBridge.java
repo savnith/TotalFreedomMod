@@ -12,6 +12,7 @@ import me.totalfreedom.totalfreedommod.FreedomService;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FLog;
+import me.totalfreedom.totalfreedommod.util.FUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -60,6 +61,11 @@ public class BukkitTelnetBridge extends FreedomService
         {
             event.setCancelled(true);
         }
+
+        server.getOnlinePlayers().stream().filter(player -> plugin.al.isAdmin(player)).filter(player -> plugin.al.getAdmin(player).getCommandSpy()).forEach((player) ->
+        {
+            FUtil.playerMsg(player, "[TELNET] " + event.getSender().getName() + ": /" + event.getCommand());
+        });
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
