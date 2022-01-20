@@ -1,9 +1,6 @@
 package me.totalfreedom.totalfreedommod.discord;
 
 import com.google.common.base.Strings;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -43,7 +40,6 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.internal.utils.concurrent.CountingThreadFactory;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.GameRule;
@@ -64,11 +60,6 @@ public class Discord extends FreedomService
     public List<CompletableFuture<Message>> sentMessages = new ArrayList<>();
     public Boolean enabled = false;
     private final Pattern DISCORD_MENTION_PATTERN = Pattern.compile("(<@!?([0-9]{16,20})>)");
-
-    public static String getMD5(String string)
-    {
-        return DigestUtils.md5Hex(string);
-    }
 
     public static String getCode(PlayerData playerData)
     {

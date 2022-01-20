@@ -6,7 +6,6 @@ public class VersionMeta
     private String name;
     private String release_target;
     private int world_version;
-    private int pack_version;
     private String build_time;
     private boolean stable;
 
@@ -28,11 +27,6 @@ public class VersionMeta
     public int getWorldVersion()
     {
         return world_version;
-    }
-
-    public int getPackVersion()
-    {
-        return pack_version;
     }
 
     public String getBuildTime()
